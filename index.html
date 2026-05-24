@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiz Andhika</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+background:linear-gradient(
+-45deg,
+#1b5e20,
+#2e7d32,
+#43a047,
+#81c784
+);
+background-size:400% 400%;
+animation:bgMove 12s ease infinite;
+}
+
+@keyframes bgMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+body::before{
+content:'';
+position:absolute;
+width:200%;
+height:200%;
+background:
+radial-gradient(circle at 20% 20%,rgba(255,255,255,.15),transparent 25%),
+radial-gradient(circle at 80% 70%,rgba(255,255,255,.15),transparent 25%);
+animation:floatBg 20s linear infinite;
+}
+
+@keyframes floatBg{
+from{transform:translate(-5%,-5%) rotate(0deg);}
+to{transform:translate(-5%,-5%) rotate(360deg);}
+}
+
+.card{
+position:relative;
+z-index:2;
+width:92%;
+max-width:550px;
+padding:25px;
+border-radius:25px;
+background:rgba(255,255,255,.18);
+backdrop-filter:blur(14px);
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+color:white;
+animation:fadeIn .8s ease;
+}
+
+@keyframes fadeIn{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.title{
+text-align:center;
+font-size:30px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.info{
+display:flex;
+justify-content:space-between;
+margin-bottom:15px;
+font-weight:bold;
+}
+
+.progress{
+height:12px;
+background:rgba(255,255,255,.2);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:white;
+transition:.4s;
+}
+
+#soal{
+text-align:center;
+margin-bottom:20px;
+line-height:1.5;
+font-size:22px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin:8px 0;
+border:none;
+border-radius:15px;
+font-size:17px;
+cursor:pointer;
+transition:.25s;
+font-weight:bold;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+button:active{
+transform:scale(.97);
+}
+
+#hasil{
+text-align:center;
+margin-top:15px;
+font-size:22px;
+font-weight:bold;
+min-height:30px;
+}
+
+.footer{
+margin-top:15px;
+text-align:center;
+opacity:.85;
+font-size:13px;
+}
+
+.restart{
+margin-top:15px;
+background:white;
+color:#2e7d32;
+font-weight:bold;
+}
+
+.rank{
+font-size:28px;
+margin-top:15px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<div class="title">🌿 Quiz Andhika 🌿</div>
+
+<div class="info">
+<div>⭐ Poin: <span id="poin">0</span></div>
+<div>Soal <span id="nomor">1</span>/15</div>
+</div>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<h2 id="soal"></h2>
+
+<button id="a" onclick="jawab(0)"></button>
+<button id="b" onclick="jawab(1)"></button>
+<button id="c" onclick="jawab(2)"></button>
+
+<div id="hasil"></div>
+
+<div class="footer">
+Seberapa Kenal Kamu Dengan Andhika?
+</div>
+
+</div>
+
+<script>
+
+let poin=0;
+let nomor=0;
+
+const soal=[
+
+{
+tanya:"Andhika lebih suka rasa apa?",
+opsi:["Asin","Manis","Asam"],
+benar:0
+},
+
+{
+tanya:"Alat musik favorit Andhika?",
+opsi:["Biola","Gitar","Piano"],
+benar:1
+},
+
+{
+tanya:"Ikan target casting favorit Andhika?",
+opsi:["Lele","Nila","Gabus"],
+benar:2
+},
+
+{
+tanya:"Komika favorit Andhika?",
+opsi:["Coki Pardede","Pandji","Raditya Dika"],
+benar:0
+},
+
+{
+tanya:"Selain Coki, siapa lagi yang disukai Andhika?",
+opsi:["Tretan Muslim","Bintang Emon","Ernest"],
+benar:0
+},
+
+{
+tanya:"Andhika suka menyanyikan lagu dari negara?",
+opsi:["Korea","India","Jepang"],
+benar:1
+},
+
+{
+tanya:"Pemandangan favorit Andhika?",
+opsi:["Mall","Sawah dan gunung","Perkotaan"],
+benar:1
+},
+
+{
+tanya:"Saat santai Andhika lebih memilih?",
+opsi:["Menikmati alam","Main di mall","Balapan"],
+benar:0
+},
+
+{
+tanya:"Aktivitas yang sering dilakukan Andhika di alam?",
+opsi:["Casting ikan gabus","Bermain golf","Panjat tebing"],
+benar:0
+},
+
+{
+tanya:"Yang lebih cocok menggambarkan selera Andhika?",
+opsi:["Asin","Manis","Pahit"],
+benar:0
+},
+
+{
+tanya:"Apa yang paling mungkin dimainkan Andhika?",
+opsi:["Gitar","Drum","Saksofon"],
+benar:0
+},
+
+{
+tanya:"Andhika lebih menikmati?",
+opsi:["Gunung dan sawah","Gedung tinggi","Pusat kota"],
+benar:0
+},
+
+{
+tanya:"Jenis hiburan yang disukai Andhika?",
+opsi:["Stand-up comedy","Opera","Balet"],
+benar:0
+},
+
+{
+tanya:"Lagu yang sering dinyanyikan Andhika berasal dari?",
+opsi:["India","Brazil","Spanyol"],
+benar:0
+},
+
+{
+tanya:"Kombinasi hobi yang paling cocok untuk Andhika?",
+opsi:[
+"Gitar, mancing, menikmati alam",
+"Basket, renang, tenis",
+"Balap, tinju, skateboard"
+],
+benar:0
+}
+
+];
+
+function tampilkan(){
+
+if(nomor>=soal.length){
+
+let rank="😅 Baru Kenal";
+
+if(poin>=80) rank="😎 Teman Dekat";
+if(poin>=120) rank="👑 Master Andhika";
+
+document.querySelector(".card").innerHTML=`
+<div class="title">🎉 Selesai 🎉</div>
+
+<h2 style="text-align:center">
+Skor Akhir<br>${poin}
+</h2>
+
+<div class="rank" style="text-align:center">
+${rank}
+</div>
+
+<button class="restart" onclick="ulang()">
+Main Lagi
+</button>
+`;
+
+return;
+}
+
+document.getElementById("soal").innerText=
+soal[nomor].tanya;
+
+document.getElementById("a").innerText=
+soal[nomor].opsi[0];
+
+document.getElementById("b").innerText=
+soal[nomor].opsi[1];
+
+document.getElementById("c").innerText=
+soal[nomor].opsi[2];
+
+document.getElementById("nomor").innerText=
+nomor+1;
+
+document.getElementById("bar").style.width=
+(nomor/soal.length)*100+"%";
+}
+
+function jawab(pilih){
+
+let hasil=document.getElementById("hasil");
+
+if(pilih===soal[nomor].benar){
+
+poin+=10;
+
+document.getElementById("poin").innerText=poin;
+
+hasil.innerHTML="✅ Benar! +10";
+
+hasil.style.color="#b9ffb9";
+
+}else{
+
+hasil.innerHTML="❌ Salah";
+
+hasil.style.color="#ffd0d0";
+}
+
+setTimeout(()=>{
+
+hasil.innerHTML="";
+
+nomor++;
+
+tampilkan();
+
+},900);
+
+}
+
+function ulang(){
+
+location.reload();
+
+}
+
+tampilkan();
+
+</script>
+
+</body>
+</html>
