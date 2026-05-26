@@ -212,7 +212,25 @@ window.yGitar = 20;
 
 setInterval(function(){
 
-yGitar += 5;
+let kecepatan = 5;
+
+if(skor >= 50){
+    kecepatan = 7;
+}
+
+if(skor >= 100){
+    kecepatan = 10;
+}
+
+if(skor >= 150){
+    kecepatan = 13;
+}
+
+if(skor >= 200){
+    kecepatan = 16;
+}
+
+yGitar += kecepatan;
 
 document.getElementById("gitar").style.top =
 yGitar + "px";
@@ -223,7 +241,14 @@ nyawa--;
 document.getElementById("score").innerText =
 "❤️".repeat(nyawa) + " ⭐ " + skor;
 if(nyawa <= 0){
-    alert("💀 GAME OVER\nSkor Akhir: " + skor);
+    let mainLagi = confirm(
+"💀 GAME OVER\n\nSkor Akhir: " + skor +
+"\n\nTekan OK untuk bermain lagi\nTekan Cancel untuk menyerah"
+);
+
+if(mainLagi){
+    location.reload();
+}
 }
 
 yGitar = 20;
