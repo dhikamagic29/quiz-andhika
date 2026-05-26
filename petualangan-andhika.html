@@ -162,6 +162,13 @@ bottom:130px;
 left:300px;
 }
 
+#awan{
+position:absolute;
+top:40px;
+left:-100px;
+font-size:60px;
+}
+
 #controls{
 position:fixed;
 bottom:20px;
@@ -182,6 +189,7 @@ margin:5px;
 
 <div id="score">❤️❤️❤️ ⭐ 0</div>
 
+<div id="awan">☁️</div>
 <div id="player"></div>
 
 <div id="gitar"
@@ -209,6 +217,7 @@ window.suaraBagus = new Audio("bagus.mp3");
 window.suaraMantap = new Audio("mantap.mp3");
 
 window.yGitar = 20;
+window.xAwan = -100;
 
 setInterval(function(){
 
@@ -234,6 +243,15 @@ yGitar += kecepatan;
 
 document.getElementById("gitar").style.top =
 yGitar + "px";
+
+xAwan += 1;
+
+document.getElementById("awan").style.left =
+xAwan + "px";
+
+if(xAwan > window.innerWidth){
+    xAwan = -100;
+}
 if(yGitar > 500){
 
 nyawa--;
