@@ -180,7 +180,7 @@ margin:5px;
 
 </style>
 
-<div id="score">⭐ 0</div>
+<div id="score">❤️❤️❤️ ⭐ 0</div>
 
 <div id="player"></div>
 
@@ -202,6 +202,11 @@ font-size:50px;
 `;
 window.posisi = 150;
 window.skor = 0;
+window.nyawa = 3;
+window.suaraTangkap = new Audio("tangkap.mp3");
+window.suaraNice = new Audio("nice.mp3");
+window.suaraBagus = new Audio("bagus.mp3");
+window.suaraMantap = new Audio("mantap.mp3");
 
 window.yGitar = 20;
 
@@ -212,6 +217,14 @@ yGitar += 5;
 document.getElementById("gitar").style.top =
 yGitar + "px";
 if(yGitar > 500){
+
+nyawa--;
+
+document.getElementById("score").innerText =
+"❤️".repeat(nyawa) + " ⭐ " + skor;
+if(nyawa <= 0){
+    alert("💀 GAME OVER\nSkor Akhir: " + skor);
+}
 
 yGitar = 20;
 
@@ -261,13 +274,27 @@ parseInt(gitar.style.top || 20);
 if(Math.abs(posisi - gx) < 40 && gy > 350){
 
 skor += 10;
+suaraTangkap.currentTime = 0;
+suaraTangkap.play();
+if(skor % 30 == 0){
+    suaraMantap.currentTime = 0;
+    suaraMantap.play();
+}
+else if(skor % 20 == 0){
+    suaraBagus.currentTime = 0;
+    suaraBagus.play();
+}
+else if(skor % 10 == 0){
+    suaraNice.currentTime = 0;
+    suaraNice.play();
+}
 yGitar = 20;
 gitar.style.top = yGitar + "px";
 gitar.style.transform = "scale(1.5)";
 
-document.getElementById("score")
-.innerText =
-"⭐ " + skor;
+document.getElementById("score").innerText =
+"❤️".repeat(nyawa) + " ⭐ " + skor;
+
 
 gx =
 Math.floor(
