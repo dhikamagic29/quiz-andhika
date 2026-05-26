@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Petualangan Andhika</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI,sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:
+linear-gradient(
+180deg,
+#87ceeb 0%,
+#87ceeb 40%,
+#7cb342 40%,
+#4caf50 100%
+);
+overflow:hidden;
+}
+
+.menu{
+width:90%;
+max-width:420px;
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(10px);
+padding:25px;
+border-radius:25px;
+text-align:center;
+color:white;
+box-shadow:0 10px 25px rgba(0,0,0,.2);
+}
+
+.avatar{
+width:180px;
+height:180px;
+border-radius:50%;
+object-fit:cover;
+border:5px solid white;
+margin:15px auto;
+display:block;
+box-shadow:
+0 0 20px rgba(255,255,255,.5),
+0 0 40px rgba(0,255,0,.4);
+animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-10px);}
+100%{transform:translateY(0);}
+}
+
+h1{
+margin-bottom:10px;
+}
+
+p{
+margin-bottom:20px;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:15px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="menu">
+
+<h1>🌿 PETUALANGAN ANDHIKA 🌿</h1>
+
+<img src="andhika.jpeg" class="avatar">
+
+<p>
+Petualangan gitar, alam dan ikan gabus
+</p>
+
+<button onclick="mulaiGame()">
+🎮 MULAI BERMAIN
+</button>
+
+</div>
+
+<script>
+
+function mulaiGame(){
+
+document.body.innerHTML = `
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:
+linear-gradient(
+180deg,
+#87ceeb 0%,
+#87ceeb 60%,
+#7cb342 60%,
+#4caf50 100%
+);
+font-family:Arial;
+}
+
+#score{
+position:absolute;
+top:15px;
+left:15px;
+font-size:28px;
+font-weight:bold;
+color:white;
+}
+
+#player{
+width:100px;
+height:100px;
+position:absolute;
+bottom:120px;
+left:150px;
+
+background-image:url("andhika.jpeg");
+background-size:cover;
+background-position:center center;
+background-repeat:no-repeat;
+
+border-radius:50%;
+border:4px solid white;
+
+box-shadow:0 0 15px rgba(255,255,255,.8);
+}
+
+#gitar{
+position:absolute;
+font-size:50px;
+bottom:130px;
+left:300px;
+}
+
+#controls{
+position:fixed;
+bottom:20px;
+width:100%;
+text-align:center;
+}
+
+.btn{
+width:80px;
+height:80px;
+font-size:35px;
+border:none;
+border-radius:15px;
+margin:5px;
+}
+
+</style>
+
+<div id="score">⭐ 0</div>
+
+<div id="player"></div>
+
+<div id="gitar"
+style="
+position:absolute;
+top:20px;
+left:300px;
+font-size:50px;
+">
+🎸
+</div>
+
+<div id="controls">
+<button class="btn" onclick="kiri()">⬅️</button>
+<button class="btn" onclick="kanan()">➡️</button>
+</div>
+
+`;
+window.posisi = 150;
+window.skor = 0;
+
+window.yGitar = 20;
+
+setInterval(function(){
+
+yGitar += 5;
+
+document.getElementById("gitar").style.top =
+yGitar + "px";
+if(yGitar > 500){
+
+yGitar = 20;
+
+}
+cekTabrak();
+
+},50);
+
+}
+
+function kiri(){
+
+posisi -= 20;
+
+if(posisi < 0){
+posisi = 0;
+}
+
+document.getElementById("player").style.left =
+posisi + "px";
+
+cekTabrak();
+
+}
+
+function kanan(){
+
+posisi += 20;
+
+document.getElementById("player").style.left =
+posisi + "px";
+
+cekTabrak();
+
+}
+
+function cekTabrak(){
+
+let gitar =
+document.getElementById("gitar");
+
+let gx =
+parseInt(gitar.style.left || 300);
+let gy =
+parseInt(gitar.style.top || 20);
+
+if(Math.abs(posisi - gx) < 40 && gy > 350){
+
+skor += 10;
+yGitar = 20;
+gitar.style.top = yGitar + "px";
+gitar.style.transform = "scale(1.5)";
+
+document.getElementById("score")
+.innerText =
+"⭐ " + skor;
+
+gx =
+Math.floor(
+Math.random()*250
+)+50;
+
+gitar.style.left =
+gx + "px";
+setTimeout(function(){
+
+gitar.style.transform = "scale(1)";
+
+},150);
+
+}
+}
+
+</script>
+
+</body>
+</html>
