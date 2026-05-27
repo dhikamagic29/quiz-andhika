@@ -114,9 +114,26 @@ document.body.innerHTML = `
 body{
 margin:0;overflow:hidden;width:100vw;height:100vh;position:fixed;top:0;left:0;touch-action:none;font-family:Arial;
 }
-#gameBg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#87ceeb 0%,#87ceeb 58%,#7cb342 58%,#4caf50 100%);}
-.cloud{position:fixed;font-size:54px;opacity:.85;z-index:1;pointer-events:none;}
-#cloud1{left:-120px;top:40px;}#cloud2{left:-280px;top:88px;font-size:42px;opacity:.65;}#cloud3{left:-420px;top:24px;font-size:35px;opacity:.6;}
+#gameBg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#ffd180 0%,#87ceeb 38%,#7cb342 58%,#4caf50 100%);transition:background 2.5s linear;}
+#nightOverlay{position:fixed;inset:0;z-index:0;pointer-events:none;background:#0c1630;opacity:0;transition:opacity 2.5s linear;}
+#grassFar{position:fixed;left:0;right:0;bottom:0;height:42%;z-index:0;background:linear-gradient(180deg,#66bb6a 0%,#43a047 55%,#2e7d32 100%);clip-path:polygon(0 22%,8% 18%,16% 24%,24% 16%,32% 26%,40% 19%,48% 27%,56% 20%,64% 28%,72% 21%,80% 26%,88% 19%,100% 24%,100% 100%,0 100%);opacity:.72;}
+#grassNear{position:fixed;left:0;right:0;bottom:0;height:32%;z-index:1;background:linear-gradient(180deg,#43a047 0%,#2e7d32 100%);clip-path:polygon(0 30%,10% 22%,20% 33%,30% 20%,40% 35%,50% 24%,60% 34%,70% 21%,80% 31%,90% 23%,100% 33%,100% 100%,0 100%);}
+#sunMoon{position:fixed;top:30px;right:40px;width:66px;height:66px;border-radius:50%;z-index:2;transition:all 2.5s linear;background:radial-gradient(circle at 34% 34%,#fff59d,#ffd54f 58%,#f9a825 100%);box-shadow:0 0 35px rgba(255,235,59,.65);}
+#sunMoon .crater{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);opacity:0;}
+#sunMoon .c1{width:12px;height:12px;top:16px;left:16px;}
+#sunMoon .c2{width:8px;height:8px;top:34px;left:28px;}
+#sunMoon .c3{width:10px;height:10px;top:22px;left:40px;}
+#cloudLayer{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.cloudReal{
+position:fixed;
+height:42px;
+border-radius:40px;
+background:
+radial-gradient(circle at 20% 60%,rgba(255,255,255,.92) 0%,rgba(255,255,255,.75) 45%,rgba(255,255,255,0) 68%),
+radial-gradient(circle at 45% 40%,rgba(255,255,255,.95) 0%,rgba(255,255,255,.78) 45%,rgba(255,255,255,0) 70%),
+radial-gradient(circle at 72% 62%,rgba(255,255,255,.9) 0%,rgba(255,255,255,.7) 40%,rgba(255,255,255,0) 66%);
+filter:drop-shadow(0 6px 8px rgba(70,90,120,.15));
+}
 #hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:4;gap:10px;}
 #scoreCard{background:rgba(0,0,0,.28);color:#fff;padding:10px 14px;border-radius:14px;font-weight:700;font-size:19px;backdrop-filter:blur(4px);}
 #levelWrap{width:150px;height:12px;background:rgba(255,255,255,.4);border-radius:999px;overflow:hidden;box-shadow:inset 0 0 4px rgba(0,0,0,.3);}
@@ -124,6 +141,25 @@ margin:0;overflow:hidden;width:100vw;height:100vh;position:fixed;top:0;left:0;to
 #muteBtn{border:none;border-radius:12px;padding:8px 10px;font-size:18px;background:rgba(255,255,255,.9);}
 #player{width:100px;height:100px;position:absolute;bottom:120px;left:150px;z-index:2;background-image:url("andhika.jpeg");background-size:cover;background-position:center center;background-repeat:no-repeat;border-radius:50%;border:4px solid white;box-shadow:0 0 15px rgba(255,255,255,.8);transition:transform .12s ease;}
 #gitar{position:absolute;font-size:50px;bottom:130px;left:300px;z-index:2;transition:transform .15s ease;}
+.bomb{
+position:absolute;
+width:34px;
+height:34px;
+border-radius:50%;
+z-index:2;
+background:radial-gradient(circle at 30% 28%,#616161 0%,#212121 62%,#000 100%);
+box-shadow:inset -3px -3px 6px rgba(0,0,0,.45),0 3px 8px rgba(0,0,0,.45);
+}
+.bombFuse{
+position:absolute;
+width:14px;
+height:4px;
+top:-6px;
+left:10px;
+border-radius:4px;
+background:#8d6e63;
+transform:rotate(-25deg);
+}
 #controls{position:fixed;bottom:20px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;z-index:4;}
 .btn{width:84px;height:84px;font-size:36px;border:none;border-radius:22px;background:rgba(255,255,255,.95);box-shadow:0 5px 16px rgba(0,0,0,.2);}
 #particles{position:fixed;inset:0;pointer-events:none;z-index:3;}
@@ -135,8 +171,9 @@ margin:0;overflow:hidden;width:100vw;height:100vh;position:fixed;top:0;left:0;to
 #btnUlang{background:#43a047;color:#fff;}#btnKeluar{background:#eceff1;color:#263238;}
 @media (max-width:480px){#scoreCard{font-size:17px;padding:8px 12px;}#levelWrap{width:120px;}.btn{width:78px;height:78px;font-size:34px;}}
 </style>
-<div id="gameBg"></div>
-<div id="cloud1" class="cloud">☁️</div><div id="cloud2" class="cloud">☁️</div><div id="cloud3" class="cloud">☁️</div>
+<div id="gameBg"></div><div id="nightOverlay"></div><div id="grassFar"></div><div id="grassNear"></div>
+<div id="sunMoon"><span class="crater c1"></span><span class="crater c2"></span><span class="crater c3"></span></div>
+<div id="cloudLayer"></div>
 <div id="particles"></div>
 <div id="hud"><div id="scoreCard"><span id="score">❤️❤️❤️ ⭐ 0</span></div><div id="levelWrap"><div id="levelBar"></div></div><button id="muteBtn" onclick="toggleMute()">🔊</button></div>
 <div id="player"></div>
@@ -148,8 +185,13 @@ document.body.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,
 document.documentElement.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
 window.posisi = 150; window.skor = 0; window.nyawa = 3; window.gameSelesai = false; window.muted = false;
 window.suaraTangkap = new Audio("tangkap.mp3"); window.suaraNice = new Audio("nice.mp3"); window.suaraBagus = new Audio("bagus.mp3"); window.suaraMantap = new Audio("mantap.mp3");
+window.bgm = new Audio("bgm.mp3");
+bgm.loop = true;
+bgm.volume = .28;
 suaraTangkap.volume = .6; suaraNice.volume = .45; suaraBagus.volume = .45; suaraMantap.volume = .5;
-window.yGitar = 20; window.xAwan1 = -120; window.xAwan2 = -280; window.xAwan3 = -420;
+window.yGitar = 20; window.waktuCuaca = 0; window.cloudData = []; window.bomList = [];
+bgm.play().catch(function(){});
+createClouds();
 updateHud();
 setInterval(function(){
 if(gameSelesai){return;}
@@ -160,13 +202,9 @@ if(skor >= 150){kecepatan = 13;}
 if(skor >= 200){kecepatan = 16;}
 yGitar += kecepatan;
 document.getElementById("gitar").style.top = yGitar + "px";
-xAwan1 += 1.1; xAwan2 += .7; xAwan3 += 1.5;
-document.getElementById("cloud1").style.left = xAwan1 + "px";
-document.getElementById("cloud2").style.left = xAwan2 + "px";
-document.getElementById("cloud3").style.left = xAwan3 + "px";
-if(xAwan1 > window.innerWidth + 120){xAwan1 = -180;}
-if(xAwan2 > window.innerWidth + 120){xAwan2 = -220;}
-if(xAwan3 > window.innerWidth + 120){xAwan3 = -260;}
+updateClouds();
+updateBom(kecepatan);
+updateCuaca();
 if(yGitar > 500){
 nyawa--; updateHud();
 if(nyawa <= 0){
@@ -186,6 +224,138 @@ let progress = Math.min((skor % 50) * 2, 100);
 document.getElementById("levelBar").style.width = progress + "%";
 }
 
+function createClouds(){
+let layer = document.getElementById("cloudLayer");
+for(let i=0;i<9;i++){
+let awan = document.createElement("div");
+awan.className = "cloudReal";
+let w = 100 + Math.random() * 110;
+let h = 28 + Math.random() * 28;
+let top = 14 + Math.random() * 165;
+let left = Math.random() * (window.innerWidth + 180) - 120;
+let speed = 0.35 + Math.random() * 0.7;
+awan.style.width = w + "px";
+awan.style.height = h + "px";
+awan.style.top = top + "px";
+awan.style.left = left + "px";
+awan.style.opacity = (0.38 + Math.random() * 0.42).toFixed(2);
+layer.appendChild(awan);
+cloudData.push({el:awan,x:left,speed:speed,width:w});
+}
+}
+
+function updateClouds(){
+for(let i=0;i<cloudData.length;i++){
+let c = cloudData[i];
+c.x += c.speed;
+if(c.x > window.innerWidth + 40){
+c.x = -c.width - (Math.random() * 150);
+}
+c.el.style.left = c.x + "px";
+}
+}
+
+function buatBom(){
+let bomb = document.createElement("div");
+bomb.className = "bomb";
+let fuse = document.createElement("span");
+fuse.className = "bombFuse";
+bomb.appendChild(fuse);
+document.body.appendChild(bomb);
+let startX = Math.floor(Math.random() * Math.max(window.innerWidth - 70, 120)) + 20;
+return {el:bomb,x:startX,y:-60,speed:6};
+}
+
+function updateBom(kecepatan){
+let levelBom = Math.min(1 + Math.floor(skor / 60), 4);
+if(bomList.length < levelBom && Math.random() < 0.06){
+bomList.push(buatBom());
+}
+for(let i=0;i<bomList.length;i++){
+let b = bomList[i];
+b.speed = kecepatan + 2 + (levelBom * 0.8);
+b.y += b.speed;
+b.el.style.left = b.x + "px";
+b.el.style.top = b.y + "px";
+if(Math.abs(posisi - b.x) < 48 && b.y > 330 && b.y < 485){
+b.el.remove();
+bomList.splice(i,1);
+i--;
+nyawa--;
+spawnPartikel(posisi + 50, 390);
+updateHud();
+if(nyawa <= 0){
+gameSelesai = true;
+document.getElementById("finalScore").innerText = "Skor Akhir: " + skor;
+document.getElementById("gameOver").style.display = "flex";
+}
+continue;
+}
+if(b.y > 560){
+b.el.remove();
+bomList.splice(i,1);
+i--;
+}
+}
+}
+
+function updateCuaca(){
+waktuCuaca = (waktuCuaca + 0.0025) % 1;
+let fase = "";
+if(waktuCuaca < 0.25){fase = "pagi";}
+else if(waktuCuaca < 0.5){fase = "siang";}
+else if(waktuCuaca < 0.75){fase = "sore";}
+else{fase = "malam";}
+let bg = document.getElementById("gameBg");
+let overlay = document.getElementById("nightOverlay");
+let sunMoon = document.getElementById("sunMoon");
+let crater = sunMoon.querySelectorAll(".crater");
+if(fase === "pagi"){
+bg.style.background = "linear-gradient(180deg,#ffd180 0%,#87ceeb 38%,#7cb342 58%,#4caf50 100%)";
+overlay.style.opacity = "0";
+sunMoon.style.top = "28px";
+sunMoon.style.right = "30px";
+sunMoon.style.width = "62px";
+sunMoon.style.height = "62px";
+sunMoon.style.background = "radial-gradient(circle at 34% 34%,#fff8c2,#ffd54f 58%,#f9a825 100%)";
+sunMoon.style.boxShadow = "0 0 32px rgba(255,210,100,.58)";
+crater.forEach(function(c){c.style.opacity="0";});
+}
+else if(fase === "siang"){
+bg.style.background = "linear-gradient(180deg,#90caf9 0%,#64b5f6 40%,#7cb342 60%,#4caf50 100%)";
+overlay.style.opacity = "0";
+sunMoon.style.top = "20px";
+sunMoon.style.right = "60px";
+sunMoon.style.width = "70px";
+sunMoon.style.height = "70px";
+sunMoon.style.background = "radial-gradient(circle at 30% 30%,#fffde7,#ffe082 55%,#fbc02d 100%)";
+sunMoon.style.boxShadow = "0 0 40px rgba(255,235,120,.7)";
+crater.forEach(function(c){c.style.opacity="0";});
+}
+else if(fase === "sore"){
+bg.style.background = "linear-gradient(180deg,#ff8a65 0%,#ffb74d 40%,#7cb342 60%,#4caf50 100%)";
+overlay.style.opacity = "0.08";
+sunMoon.style.top = "36px";
+sunMoon.style.right = "36px";
+sunMoon.style.width = "60px";
+sunMoon.style.height = "60px";
+sunMoon.style.background = "radial-gradient(circle at 34% 34%,#ffe0b2,#ffb74d 58%,#f57c00 100%)";
+sunMoon.style.boxShadow = "0 0 28px rgba(255,167,38,.55)";
+crater.forEach(function(c){c.style.opacity="0";});
+}
+else{
+bg.style.background = "linear-gradient(180deg,#1a237e 0%,#283593 42%,#33691e 62%,#2e7d32 100%)";
+overlay.style.opacity = "0.28";
+sunMoon.style.top = "26px";
+sunMoon.style.right = "42px";
+sunMoon.style.width = "56px";
+sunMoon.style.height = "56px";
+sunMoon.style.background = "radial-gradient(circle at 30% 30%,#f5f5f5,#cfd8dc 62%,#90a4ae 100%)";
+sunMoon.style.boxShadow = "0 0 24px rgba(207,216,220,.5)";
+crater.forEach(function(c){c.style.opacity=".95";});
+}
+}
+
 function mainkanSuara(audio){
 if(muted){return;}
 audio.currentTime = 0;
@@ -195,6 +365,12 @@ audio.play();
 function toggleMute(){
 muted = !muted;
 document.getElementById("muteBtn").innerText = muted ? "🔇" : "🔊";
+if(muted){
+bgm.pause();
+}
+else{
+bgm.play().catch(function(){});
+}
 }
 
 function tutupGameOver(){
