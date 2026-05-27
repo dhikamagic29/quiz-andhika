@@ -163,6 +163,7 @@ height:100px;
 position:absolute;
 bottom:120px;
 left:150px;
+z-index:2;
 
 background-image:url("andhika.jpeg");
 background-size:cover;
@@ -180,6 +181,7 @@ position:absolute;
 font-size:50px;
 bottom:130px;
 left:300px;
+z-index:2;
 }
 
 #awan{
@@ -187,6 +189,7 @@ position:absolute;
 top:40px;
 left:-100px;
 font-size:60px;
+z-index:2;
 }
 
 #controls{
@@ -201,12 +204,13 @@ display:flex;
 justify-content:center;
 align-items:center;
 transform:translate3d(0,0,0);
+z-index:2;
 }
 
 #gameBg{
 position:fixed;
 inset:0;
-z-index:-1;
+z-index:0;
 background:
 linear-gradient(
 180deg,
@@ -253,6 +257,8 @@ font-size:50px;
 
 `;
 document.body.style.background =
+"linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
+document.documentElement.style.background =
 "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
 window.posisi = 150;
 window.skor = 0;
