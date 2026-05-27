@@ -112,7 +112,17 @@ function mulaiGame(){
 
 document.body.innerHTML = `
 
+
 <style>
+    .btn{
+width:80px;
+height:80px;
+font-size:35px;
+margin:5px;
+border:none;
+border-radius:20px;
+background:white;
+}
 
 body{
 margin:0;
@@ -174,13 +184,14 @@ width:100%;
 text-align:center;
 }
 
-.btn{
-width:80px;
-height:80px;
-font-size:35px;
-border:none;
-border-radius:15px;
-margin:5px;
+#controls{
+position:fixed !important;
+left:0;
+right:0;
+bottom:15px;
+text-align:center;
+z-index:999999;
+pointer-events:auto;
 }
 
 </style>
@@ -200,8 +211,7 @@ font-size:50px;
 🎸
 </div>
 
-<div id="controls"
-style="position:fixed;bottom:20px;width:100%;text-align:center;z-index:99999;">
+<div id="controls">
 <button class="btn" onclick="kiri()">⬅️</button>
 <button class="btn" onclick="kanan()">➡️</button>
 </div>
