@@ -109,301 +109,155 @@ Petualangan gitar, alam dan ikan gabus
 <script>
 
 function mulaiGame(){
-
 document.body.innerHTML = `
-
-
 <style>
-  .btn{
-width:80px;
-height:80px;
-font-size:35px;
-margin:5px;
-border:none;
-border-radius:20px;
-background:white;
-
-position:fixed;
-bottom:20px;
-}
-
 body{
-margin:0;
-overflow:hidden;
-width:100vw;
-height:100vh;
-position:fixed;
-top:0;
-left:0;
-touch-action:none;
-
-background:
-linear-gradient(
-180deg,
-#87ceeb 0%,
-#87ceeb 60%,
-#7cb342 60%,
-#4caf50 100%
-);
-
-font-family:Arial;
+margin:0;overflow:hidden;width:100vw;height:100vh;position:fixed;top:0;left:0;touch-action:none;font-family:Arial;
 }
-
-#score{
-position:fixed;
-top:10px;
-left:10px;
-font-size:20px;
-z-index:99999;
-}
-
-#player{
-width:100px;
-height:100px;
-position:absolute;
-bottom:120px;
-left:150px;
-z-index:2;
-
-background-image:url("andhika.jpeg");
-background-size:cover;
-background-position:center center;
-background-repeat:no-repeat;
-
-border-radius:50%;
-border:4px solid white;
-
-box-shadow:0 0 15px rgba(255,255,255,.8);
-}
-
-#gitar{
-position:absolute;
-font-size:50px;
-bottom:130px;
-left:300px;
-z-index:2;
-}
-
-#awan{
-position:absolute;
-top:40px;
-left:-100px;
-font-size:60px;
-z-index:2;
-}
-
-#controls{
-position:fixed;
-bottom:20px;
-left:0;
-right:0;
-text-align:center;
-z-index:99999;
-height:100px;
-display:flex;
-justify-content:center;
-align-items:center;
-transform:translate3d(0,0,0);
-z-index:2;
-}
-
-#gameBg{
-position:fixed;
-inset:0;
-z-index:0;
-background:
-linear-gradient(
-180deg,
-#87ceeb 0%,
-#87ceeb 60%,
-#7cb342 60%,
-#4caf50 100%
-);
-}
-
-button:first-child{
-left:20px;
-}
-
-button:last-child{
-right:20px;
-}
-
-
-
-
+#gameBg{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,#87ceeb 0%,#87ceeb 58%,#7cb342 58%,#4caf50 100%);}
+.cloud{position:fixed;font-size:54px;opacity:.85;z-index:1;pointer-events:none;}
+#cloud1{left:-120px;top:40px;}#cloud2{left:-280px;top:88px;font-size:42px;opacity:.65;}#cloud3{left:-420px;top:24px;font-size:35px;opacity:.6;}
+#hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;z-index:4;gap:10px;}
+#scoreCard{background:rgba(0,0,0,.28);color:#fff;padding:10px 14px;border-radius:14px;font-weight:700;font-size:19px;backdrop-filter:blur(4px);}
+#levelWrap{width:150px;height:12px;background:rgba(255,255,255,.4);border-radius:999px;overflow:hidden;box-shadow:inset 0 0 4px rgba(0,0,0,.3);}
+#levelBar{height:100%;width:0%;background:linear-gradient(90deg,#ffe082,#ff9800,#f44336);transition:width .2s linear;}
+#muteBtn{border:none;border-radius:12px;padding:8px 10px;font-size:18px;background:rgba(255,255,255,.9);}
+#player{width:100px;height:100px;position:absolute;bottom:120px;left:150px;z-index:2;background-image:url("andhika.jpeg");background-size:cover;background-position:center center;background-repeat:no-repeat;border-radius:50%;border:4px solid white;box-shadow:0 0 15px rgba(255,255,255,.8);transition:transform .12s ease;}
+#gitar{position:absolute;font-size:50px;bottom:130px;left:300px;z-index:2;transition:transform .15s ease;}
+#controls{position:fixed;bottom:20px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;z-index:4;}
+.btn{width:84px;height:84px;font-size:36px;border:none;border-radius:22px;background:rgba(255,255,255,.95);box-shadow:0 5px 16px rgba(0,0,0,.2);}
+#particles{position:fixed;inset:0;pointer-events:none;z-index:3;}
+.spark{position:absolute;font-size:20px;animation:pop .45s ease forwards;}
+@keyframes pop{0%{transform:translateY(0) scale(.6);opacity:1;}100%{transform:translateY(-45px) scale(1.35);opacity:0;}}
+#gameOver{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10;display:none;justify-content:center;align-items:center;padding:20px;}
+#gameOverBox{width:min(360px,90vw);background:#fff;border-radius:20px;padding:18px;text-align:center;box-shadow:0 12px 35px rgba(0,0,0,.3);}
+.goBtn{width:100%;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:16px;margin-bottom:10px;}
+#btnUlang{background:#43a047;color:#fff;}#btnKeluar{background:#eceff1;color:#263238;}
+@media (max-width:480px){#scoreCard{font-size:17px;padding:8px 12px;}#levelWrap{width:120px;}.btn{width:78px;height:78px;font-size:34px;}}
 </style>
-
 <div id="gameBg"></div>
-<div id="score">❤️❤️❤️ ⭐ 0</div>
-
-<div id="awan">☁️</div>
+<div id="cloud1" class="cloud">☁️</div><div id="cloud2" class="cloud">☁️</div><div id="cloud3" class="cloud">☁️</div>
+<div id="particles"></div>
+<div id="hud"><div id="scoreCard"><span id="score">❤️❤️❤️ ⭐ 0</span></div><div id="levelWrap"><div id="levelBar"></div></div><button id="muteBtn" onclick="toggleMute()">🔊</button></div>
 <div id="player"></div>
-
-<div id="gitar"
-style="
-position:absolute;
-top:20px;
-left:300px;
-font-size:50px;
-">
-🎸
-</div>
-
-<div id="controls">
-<button class="btn" ontouchstart="kiri()" onclick="kiri()">⬅️</button>
-<button class="btn" ontouchstart="kanan()" onclick="kanan()">➡️</button>
-</div>
-
+<div id="gitar" style="position:absolute;top:20px;left:300px;font-size:50px;">🎸</div>
+<div id="controls"><button class="btn" ontouchstart="kiri()" onclick="kiri()">⬅️</button><button class="btn" ontouchstart="kanan()" onclick="kanan()">➡️</button></div>
+<div id="gameOver"><div id="gameOverBox"><h2>💀 Game Over</h2><p id="finalScore">Skor Akhir: 0</p><button id="btnUlang" class="goBtn" onclick="location.reload()">Main Lagi</button><button id="btnKeluar" class="goBtn" onclick="tutupGameOver()">Lihat Dulu</button></div></div>
 `;
-document.body.style.background =
-"linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
-document.documentElement.style.background =
-"linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
-window.posisi = 150;
-window.skor = 0;
-window.nyawa = 3;
-window.suaraTangkap = new Audio("tangkap.mp3");
-window.suaraNice = new Audio("nice.mp3");
-window.suaraBagus = new Audio("bagus.mp3");
-window.suaraMantap = new Audio("mantap.mp3");
-
-window.yGitar = 20;
-window.xAwan = -100;
-
+document.body.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
+document.documentElement.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
+window.posisi = 150; window.skor = 0; window.nyawa = 3; window.gameSelesai = false; window.muted = false;
+window.suaraTangkap = new Audio("tangkap.mp3"); window.suaraNice = new Audio("nice.mp3"); window.suaraBagus = new Audio("bagus.mp3"); window.suaraMantap = new Audio("mantap.mp3");
+suaraTangkap.volume = .6; suaraNice.volume = .45; suaraBagus.volume = .45; suaraMantap.volume = .5;
+window.yGitar = 20; window.xAwan1 = -120; window.xAwan2 = -280; window.xAwan3 = -420;
+updateHud();
 setInterval(function(){
-
+if(gameSelesai){return;}
 let kecepatan = 5;
-
-if(skor >= 50){
-    kecepatan = 7;
-}
-
-if(skor >= 100){
-    kecepatan = 10;
-}
-
-if(skor >= 150){
-    kecepatan = 13;
-}
-
-if(skor >= 200){
-    kecepatan = 16;
-}
-
+if(skor >= 50){kecepatan = 7;}
+if(skor >= 100){kecepatan = 10;}
+if(skor >= 150){kecepatan = 13;}
+if(skor >= 200){kecepatan = 16;}
 yGitar += kecepatan;
-
-document.getElementById("gitar").style.top =
-yGitar + "px";
-
-xAwan += 1;
-
-document.getElementById("awan").style.left =
-xAwan + "px";
-
-if(xAwan > window.innerWidth){
-    xAwan = -100;
-}
+document.getElementById("gitar").style.top = yGitar + "px";
+xAwan1 += 1.1; xAwan2 += .7; xAwan3 += 1.5;
+document.getElementById("cloud1").style.left = xAwan1 + "px";
+document.getElementById("cloud2").style.left = xAwan2 + "px";
+document.getElementById("cloud3").style.left = xAwan3 + "px";
+if(xAwan1 > window.innerWidth + 120){xAwan1 = -180;}
+if(xAwan2 > window.innerWidth + 120){xAwan2 = -220;}
+if(xAwan3 > window.innerWidth + 120){xAwan3 = -260;}
 if(yGitar > 500){
-
-nyawa--;
-
-document.getElementById("score").innerText =
-"❤️".repeat(nyawa) + " ⭐ " + skor;
+nyawa--; updateHud();
 if(nyawa <= 0){
-    let mainLagi = confirm(
-"💀 GAME OVER\n\nSkor Akhir: " + skor +
-"\n\nTekan OK untuk bermain lagi\nTekan Cancel untuk menyerah"
-);
-
-if(mainLagi){
-    location.reload();
+gameSelesai = true;
+document.getElementById("finalScore").innerText = "Skor Akhir: " + skor;
+document.getElementById("gameOver").style.display = "flex";
 }
-}
-
 yGitar = 20;
-
 }
 cekTabrak();
-
 },50);
+}
 
+function updateHud(){
+document.getElementById("score").innerText = "❤️".repeat(Math.max(nyawa,0)) + " ⭐ " + skor;
+let progress = Math.min((skor % 50) * 2, 100);
+document.getElementById("levelBar").style.width = progress + "%";
+}
+
+function mainkanSuara(audio){
+if(muted){return;}
+audio.currentTime = 0;
+audio.play();
+}
+
+function toggleMute(){
+muted = !muted;
+document.getElementById("muteBtn").innerText = muted ? "🔇" : "🔊";
+}
+
+function tutupGameOver(){
+document.getElementById("gameOver").style.display = "none";
+}
+
+function animasiGerak(arah){
+let player = document.getElementById("player");
+player.style.transform = arah === "kiri" ? "translateX(-3px) scale(1.04)" : "translateX(3px) scale(1.04)";
+setTimeout(function(){ player.style.transform = "translateX(0) scale(1)"; },120);
+}
+
+function spawnPartikel(x,y){
+let wadah = document.getElementById("particles");
+for(let i=0;i<6;i++){
+let bintang = document.createElement("span");
+bintang.className = "spark";
+bintang.innerText = "✨";
+bintang.style.left = (x + (Math.random()*30-15)) + "px";
+bintang.style.top = (y + (Math.random()*20-10)) + "px";
+wadah.appendChild(bintang);
+setTimeout(function(){ bintang.remove(); },450);
+}
 }
 
 function kiri(){
-
+if(gameSelesai){return;}
 posisi -= 20;
-
-if(posisi < 0){
-posisi = 0;
-}
-
-document.getElementById("player").style.left =
-posisi + "px";
-
+if(posisi < 0){ posisi = 0; }
+document.getElementById("player").style.left = posisi + "px";
+animasiGerak("kiri");
 cekTabrak();
-
 }
 
 function kanan(){
-
+if(gameSelesai){return;}
 posisi += 20;
-
-document.getElementById("player").style.left =
-posisi + "px";
-
+let batasKanan = window.innerWidth - 100;
+if(posisi > batasKanan){ posisi = batasKanan; }
+document.getElementById("player").style.left = posisi + "px";
+animasiGerak("kanan");
 cekTabrak();
-
 }
 
 function cekTabrak(){
-
-let gitar =
-document.getElementById("gitar");
-
-let gx =
-parseInt(gitar.style.left || 300);
-let gy =
-parseInt(gitar.style.top || 20);
-
-if(Math.abs(posisi - gx) < 40 && gy > 350){
-
+if(gameSelesai){return;}
+let gitar = document.getElementById("gitar");
+let gx = parseInt(gitar.style.left || 300);
+let gy = parseInt(gitar.style.top || 20);
+if(Math.abs(posisi - gx) < 45 && gy > 350){
 skor += 10;
-suaraTangkap.currentTime = 0;
-suaraTangkap.play();
-if(skor % 30 == 0){
-    suaraMantap.currentTime = 0;
-    suaraMantap.play();
-}
-else if(skor % 20 == 0){
-    suaraBagus.currentTime = 0;
-    suaraBagus.play();
-}
-else if(skor % 10 == 0){
-    suaraNice.currentTime = 0;
-    suaraNice.play();
-}
+mainkanSuara(suaraTangkap);
+if(skor % 30 === 0){ mainkanSuara(suaraMantap); }
+else if(skor % 20 === 0){ mainkanSuara(suaraBagus); }
+else if(skor % 10 === 0){ mainkanSuara(suaraNice); }
 yGitar = 20;
 gitar.style.top = yGitar + "px";
 gitar.style.transform = "scale(1.5)";
-
-document.getElementById("score").innerText =
-"❤️".repeat(nyawa) + " ⭐ " + skor;
-
-
-gx =
-Math.floor(
-Math.random()*250
-)+50;
-
-gitar.style.left =
-gx + "px";
-setTimeout(function(){
-
-gitar.style.transform = "scale(1)";
-
-},150);
-
+updateHud();
+spawnPartikel(posisi + 50, gy);
+gx = Math.floor(Math.random() * Math.max(window.innerWidth - 120, 200)) + 40;
+gitar.style.left = gx + "px";
+setTimeout(function(){ gitar.style.transform = "scale(1)"; },150);
 }
 }
 
