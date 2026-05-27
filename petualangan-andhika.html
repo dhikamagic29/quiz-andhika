@@ -2,16 +2,37 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Petualangan Andhika</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2e7d32">
+  <title>Petualangan Andhika — Gitar, Alam & Ikan Gabus</title>
   <link rel="stylesheet" href="petualangan-andhika.css">
 </head>
 <body>
+  <div class="langit" aria-hidden="true"></div>
+  <div class="kolam-menu" aria-hidden="true"></div>
+
   <div class="menu">
-    <h1>🌿 PETUALANGAN ANDHIKA 🌿</h1>
-    <img src="andhika.jpeg" class="avatar" alt="Andhika">
-    <p>Petualangan gitar, alam dan ikan gabus</p>
-    <button onclick="mulaiGame()">🎮 MULAI BERMAIN</button>
+    <p class="menu-badge">🌿 Game Keluarga Andhika</p>
+    <h1>PETUALANGAN ANDHIKA</h1>
+    <img src="andhika.jpeg" class="avatar" alt="Andhika di tepi kolam" decoding="async">
+    <p class="menu-tagline">Tangkap petikan gitar, hindari batu di kolam, kumpulkan ikan gabus!</p>
+    <div class="menu-tema">
+      <span>🎸 Gitar</span>
+      <span>🌿 Alam</span>
+      <span>🐟 Ikan Gabus</span>
+    </div>
+    <p class="menu-cerita">
+      Andhika berpetualang di tepi sawah dan kolam — didukung Mama, Papa, Dea, dan Rani.
+      Tangkap gitar, kumpulkan ikan gabus, dan rasakan semangat keluarga!
+    </p>
+    <div class="keluarga-grid" aria-label="Keluarga Andhika">
+      <figure><img src="mama.jpeg" alt="Mama" decoding="async"><figcaption>Mama</figcaption></figure>
+      <figure><img src="papa.jpeg" alt="Papa" decoding="async"><figcaption>Papa</figcaption></figure>
+      <figure><img src="dea.jpeg" alt="Dea" decoding="async"><figcaption>Dea <small>· Adik</small></figcaption></figure>
+      <figure><img src="rani.jpeg" alt="Rani" decoding="async"><figcaption>Rani <small>· Adik</small></figcaption></figure>
+    </div>
+    <button type="button" id="btnMulai">🎮 Mulai Petualangan</button>
   </div>
   <script src="petualangan-andhika.js"></script>
 </body>
