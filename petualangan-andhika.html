@@ -140,6 +140,15 @@ filter:drop-shadow(0 6px 8px rgba(70,90,120,.15));
 #levelBar{height:100%;width:0%;background:linear-gradient(90deg,#ffe082,#ff9800,#f44336);transition:width .2s linear;}
 #muteBtn{border:none;border-radius:12px;padding:8px 10px;font-size:18px;background:rgba(255,255,255,.9);}
 #player{width:100px;height:100px;position:absolute;bottom:120px;left:150px;z-index:2;background-image:url("andhika.jpeg");background-size:cover;background-position:center center;background-repeat:no-repeat;border-radius:50%;border:4px solid white;box-shadow:0 0 15px rgba(255,255,255,.8);transition:transform .12s ease;}
+#playerGlow{position:absolute;inset:-10px;border-radius:50%;opacity:0;pointer-events:none;}
+#player.healFlash #playerGlow{opacity:1;animation:healFlash .55s ease forwards;background:radial-gradient(circle at 50% 50%,rgba(255,105,180,.65),rgba(255,105,180,0) 70%);}
+#player.shieldFlash #playerGlow{opacity:1;animation:shieldFlash .6s ease forwards;background:radial-gradient(circle at 50% 50%,rgba(0,200,255,.55),rgba(0,200,255,0) 70%);}
+@keyframes healFlash{0%{transform:scale(.7);opacity:0;}30%{transform:scale(1.05);opacity:1;}100%{transform:scale(1.25);opacity:0;}}
+@keyframes shieldFlash{0%{transform:scale(.8);opacity:0;}35%{transform:scale(1.05);opacity:1;}100%{transform:scale(1.25);opacity:0;}}
+#shieldAura{position:absolute;inset:-12px;border-radius:50%;opacity:0;pointer-events:none;border:3px solid rgba(120,220,255,.85);box-shadow:0 0 18px rgba(120,220,255,.55),inset 0 0 18px rgba(120,220,255,.25);transform:scale(.92);transition:opacity .25s ease,transform .25s ease;}
+#player.shieldOn #shieldAura{opacity:1;transform:scale(1);}
+#player.shieldBreak #shieldAura{animation:shieldBreak .28s ease forwards;}
+@keyframes shieldBreak{0%{transform:scale(1);opacity:1;}100%{transform:scale(1.15);opacity:0;}}
 #gitar{position:absolute;font-size:50px;bottom:130px;left:300px;z-index:2;transition:transform .15s ease;}
 .bomb{
 position:absolute;
@@ -160,6 +169,21 @@ border-radius:4px;
 background:#8d6e63;
 transform:rotate(-25deg);
 }
+.dropItem{
+position:absolute;
+z-index:2;
+width:40px;
+height:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+filter:drop-shadow(0 6px 10px rgba(0,0,0,.25));
+user-select:none;
+}
+.dropHeart{animation:floatItem 1.2s ease-in-out infinite;}
+.dropShield{animation:floatItem 1.4s ease-in-out infinite;}
+@keyframes floatItem{0%{transform:translateY(0);}50%{transform:translateY(-4px);}100%{transform:translateY(0);}}
 #controls{position:fixed;bottom:20px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;z-index:4;}
 .btn{width:84px;height:84px;font-size:36px;border:none;border-radius:22px;background:rgba(255,255,255,.95);box-shadow:0 5px 16px rgba(0,0,0,.2);}
 #particles{position:fixed;inset:0;pointer-events:none;z-index:3;}
@@ -176,7 +200,7 @@ transform:rotate(-25deg);
 <div id="cloudLayer"></div>
 <div id="particles"></div>
 <div id="hud"><div id="scoreCard"><span id="score">❤️❤️❤️ ⭐ 0</span></div><div id="levelWrap"><div id="levelBar"></div></div><button id="muteBtn" onclick="toggleMute()">🔊</button></div>
-<div id="player"></div>
+<div id="player"><div id="playerGlow"></div><div id="shieldAura"></div></div>
 <div id="gitar" style="position:absolute;top:20px;left:300px;font-size:50px;">🎸</div>
 <div id="controls"><button class="btn" ontouchstart="kiri()" onclick="kiri()">⬅️</button><button class="btn" ontouchstart="kanan()" onclick="kanan()">➡️</button></div>
 <div id="gameOver"><div id="gameOverBox"><h2>💀 Game Over</h2><p id="finalScore">Skor Akhir: 0</p><button id="btnUlang" class="goBtn" onclick="location.reload()">Main Lagi</button><button id="btnKeluar" class="goBtn" onclick="tutupGameOver()">Lihat Dulu</button></div></div>
@@ -190,11 +214,14 @@ bgm.loop = true;
 bgm.volume = .28;
 suaraTangkap.volume = .6; suaraNice.volume = .45; suaraBagus.volume = .45; suaraMantap.volume = .5;
 window.yGitar = 20; window.waktuCuaca = 0; window.cloudData = []; window.bomList = []; window.invulnFrames = 0;
+window.heartList = []; window.shieldList = []; window.shieldActive = false; window.frameTick = 0;
+window.nextHeartAt = 220; window.nextShieldAt = 380;
 bgm.play().catch(function(){});
 createClouds();
 updateHud();
 setInterval(function(){
 if(gameSelesai){return;}
+frameTick++;
 if(invulnFrames > 0){invulnFrames--;}
 let kecepatan = 5;
 if(skor >= 50){kecepatan = 7;}
@@ -205,6 +232,7 @@ yGitar += kecepatan;
 document.getElementById("gitar").style.top = yGitar + "px";
 updateClouds();
 cekTabrak();
+updateDrops(kecepatan);
 updateBom(kecepatan);
 updateCuaca();
 if(yGitar > 500){
@@ -285,6 +313,10 @@ continue;
 b.el.remove();
 bomList.splice(i,1);
 i--;
+if(shieldActive){
+pecahShield();
+continue;
+}
 nyawa--;
 spawnPartikel(posisi + 50, 390);
 updateHud();
@@ -301,6 +333,108 @@ bomList.splice(i,1);
 i--;
 }
 }
+}
+
+function updateDrops(kecepatan){
+updateHeart(kecepatan);
+updateShield(kecepatan);
+}
+
+function buatDrop(icon, className){
+let el = document.createElement("div");
+el.className = "dropItem " + className;
+el.innerText = icon;
+document.body.appendChild(el);
+let x = Math.floor(Math.random() * Math.max(window.innerWidth - 80, 140)) + 20;
+return {el:el,x:x,y:-60,speed:kecepatanKeDrop()};
+}
+
+function kecepatanKeDrop(){
+return 6 + Math.min(Math.floor(skor / 80), 4);
+}
+
+function updateHeart(kecepatan){
+if(nyawa < 5 && frameTick > nextHeartAt && heartList.length < 1){
+let h = document.createElement("div");
+h.className = "dropItem dropHeart";
+h.innerText = "❤️";
+document.body.appendChild(h);
+let x = Math.floor(Math.random() * Math.max(window.innerWidth - 80, 140)) + 20;
+heartList.push({el:h,x:x,y:-60,speed:kecepatan + 1});
+nextHeartAt = frameTick + (320 + Math.floor(Math.random() * 220));
+}
+for(let i=0;i<heartList.length;i++){
+let it = heartList[i];
+it.y += (kecepatan + 1);
+it.el.style.left = it.x + "px";
+it.el.style.top = it.y + "px";
+if(Math.abs(posisi - it.x) < 55 && it.y > 320 && it.y < 485){
+it.el.remove();
+heartList.splice(i,1);
+i--;
+nyawa = Math.min(nyawa + 1, 5);
+flashHeal();
+updateHud();
+continue;
+}
+if(it.y > 560){
+it.el.remove();
+heartList.splice(i,1);
+i--;
+}
+}
+}
+
+function updateShield(kecepatan){
+if(!shieldActive && frameTick > nextShieldAt && shieldList.length < 1){
+let s = document.createElement("div");
+s.className = "dropItem dropShield";
+s.innerText = "🛡️";
+document.body.appendChild(s);
+let x = Math.floor(Math.random() * Math.max(window.innerWidth - 80, 140)) + 20;
+shieldList.push({el:s,x:x,y:-60,speed:kecepatan + 1});
+nextShieldAt = frameTick + (420 + Math.floor(Math.random() * 260));
+}
+for(let i=0;i<shieldList.length;i++){
+let it = shieldList[i];
+it.y += (kecepatan + 1);
+it.el.style.left = it.x + "px";
+it.el.style.top = it.y + "px";
+if(Math.abs(posisi - it.x) < 55 && it.y > 320 && it.y < 485){
+it.el.remove();
+shieldList.splice(i,1);
+i--;
+aktifkanShield();
+continue;
+}
+if(it.y > 560){
+it.el.remove();
+shieldList.splice(i,1);
+i--;
+}
+}
+}
+
+function aktifkanShield(){
+shieldActive = true;
+let p = document.getElementById("player");
+p.classList.add("shieldOn");
+p.classList.add("shieldFlash");
+setTimeout(function(){ p.classList.remove("shieldFlash"); },650);
+}
+
+function pecahShield(){
+shieldActive = false;
+let p = document.getElementById("player");
+p.classList.remove("shieldOn");
+p.classList.add("shieldBreak");
+setTimeout(function(){ p.classList.remove("shieldBreak"); },300);
+}
+
+function flashHeal(){
+let p = document.getElementById("player");
+p.classList.add("healFlash");
+setTimeout(function(){ p.classList.remove("healFlash"); },600);
 }
 
 function updateCuaca(){
