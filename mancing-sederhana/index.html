@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#1565c0">
+  <title>Casting Danau Andhika</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="layarMenu" class="layar">
+    <div class="kartu-menu">
+      <img id="menuFotoAndhika" src="andhika.jpeg" alt="Foto Andhika" />
+      <p class="badge">🎣 Game HTML</p>
+      <h1>CASTING DANAU ANDHIKA</h1>
+      <p class="tagline">Vibes langit indah, air danau tenang, dan strike yang terasa realistis.</p>
+      <ul class="cara-main">
+        <li>Tap <strong>Lempar Lure</strong> untuk casting ke area danau</li>
+        <li>Setelah lure masuk air, tekan kiri/kanan berulang agar lure bergerak menarik</li>
+        <li>Kalau ikan tertarik, muncul tanda <strong>!</strong> lalu lanjut <strong>Strike!</strong></li>
+      </ul>
+      <button type="button" id="btnMulai" class="btn-utama">🎣 Mulai Mancing</button>
+    </div>
+  </div>
+
+  <div id="layarGame" class="layar tersembunyi">
+    <div id="hud">
+      <div id="storageBox" aria-label="Box penyimpanan ikan">
+        <span class="storage-lid"></span>
+        <span class="storage-fish">🐟</span>
+        <span class="storage-label">Box Ikan</span>
+        <span class="storage-count"><span id="skor">0</span></span>
+      </div>
+      <div id="pesanFase">Siap lempar</div>
+      <div id="ritmeBox">Ritme <span id="ritme">0</span>%</div>
+      <button type="button" id="btnMute" aria-label="Suara">🔊</button>
+    </div>
+
+    <div id="langit"></div>
+    <div id="lanskapTepi">
+      <div class="pohon pohon-kiri">
+        <span class="kanopi"></span>
+        <span class="batang"></span>
+      </div>
+      <div class="pohon pohon-kanan">
+        <span class="kanopi"></span>
+        <span class="batang"></span>
+      </div>
+      <div id="daratanRumput">
+        <span class="rumpun r1"></span>
+        <span class="rumpun r2"></span>
+        <span class="rumpun r3"></span>
+        <span class="rumpun r4"></span>
+      </div>
+    </div>
+    <div id="permukaanAir"></div>
+    <div id="kolam">
+      <div id="ombak"></div>
+      <div id="gelembungLayer"></div>
+      <div id="tanamanAirLayer" aria-hidden="true">
+        <span class="tanaman-air t1"></span>
+        <span class="tanaman-air t2"></span>
+        <span class="tanaman-air t3"></span>
+        <span class="tanaman-air t4"></span>
+        <span class="tanaman-air t5"></span>
+        <span class="tanaman-air t6"></span>
+      </div>
+      <div id="dasar"></div>
+      <div id="areaIkan"></div>
+      <div id="umpan" class="tersembunyi" aria-hidden="true">
+        <img id="imgLure" src="file:///C:/Users/R%20Y%20Z%20E%20N/.cursor/projects/c-Users-R-Y-Z-E-N-OneDrive-Documents-GitHub-quiz-andhika/assets/c__Users_R_Y_Z_E_N_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_lure-4ac83783-2174-4371-98a9-d8435ae43469.png" alt="Lure" />
+      </div>
+      <svg id="tali" aria-hidden="true"><line id="taliGaris" x1="50%" y1="0" x2="50%" y2="0"/></svg>
+    </div>
+
+    <div id="pemancing">
+      <img id="fotoAndhika" src="andhika.jpeg" alt="Andhika" />
+      <span class="rod" aria-hidden="true">
+        <span class="rod-batang"></span>
+        <span class="rod-handle"></span>
+        <span class="rod-reel"></span>
+        <span class="rod-guide g1"></span>
+        <span class="rod-guide g2"></span>
+        <span class="rod-guide g3"></span>
+      </span>
+      <span class="nama-andhika">Andhika</span>
+    </div>
+
+    <div id="panelSerang" class="tersembunyi">
+      <p class="serang-teks">🐟 STRIKE!</p>
+      <div id="meterStrike">
+        <div id="zonaPas"></div>
+        <div id="barPower"></div>
+      </div>
+      <p class="hint-strike">Jaga power di zona hijau. Tap untuk pompa tarik.</p>
+      <button type="button" id="btnTarik" class="btn-utama btn-tarik">Pompa tarik!</button>
+    </div>
+
+    <div id="kontrol">
+      <button type="button" id="btnKiri" class="btn-arah" aria-label="Geser kiri">⬅️</button>
+      <button type="button" id="btnLempar" class="btn-utama btn-lempar">Lempar lure</button>
+      <button type="button" id="btnKanan" class="btn-arah" aria-label="Geser kanan">➡️</button>
+    </div>
+
+    <div id="toast"></div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

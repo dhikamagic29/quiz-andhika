@@ -98,6 +98,79 @@ el.setAttribute("playsinline", "");
 el.setAttribute("webkit-playsinline", "");
 }
 
+function inisialisasiAudio(){
+if(!window.bgm){
+window.bgm = new Audio("backsound.mp3");
+bgm.loop = true;
+bgm.volume = 0.28;
+siapkanAudioEl(bgm);
+}
+if(!window.suaraTangkap){
+window.suaraTangkap = new Audio("tangkap.mp3");
+window.suaraNice = new Audio("nice.mp3");
+window.suaraBagus = new Audio("bagus.mp3");
+window.suaraMantap = new Audio("mantap.mp3");
+suaraTangkap.volume = 0.6;
+suaraNice.volume = 0.45;
+suaraBagus.volume = 0.45;
+suaraMantap.volume = 0.5;
+siapkanAudioEl(suaraTangkap);
+siapkanAudioEl(suaraNice);
+siapkanAudioEl(suaraBagus);
+siapkanAudioEl(suaraMantap);
+}
+try{bgm.load();}catch(err){}
+}
+
+function siapkanBacksoundDiam(){
+inisialisasiAudio();
+if(window.bgmDiamSiap || !window.bgm){return;}
+var b = window.bgm;
+b.muted = true;
+b.volume = 0.28;
+var jalan = b.play();
+if(jalan && jalan.then){
+jalan.then(function(){
+window.bgmDiamSiap = true;
+window.bgmMenungguTap = false;
+}).catch(function(){
+window.bgmMenungguTap = true;
+});
+}else{
+window.bgmDiamSiap = true;
+}
+}
+
+function putarBacksoundSegera(){
+if(window.muted || !window.bgm){return;}
+var b = window.bgm;
+b.volume = 0.28;
+b.muted = false;
+if(window.bgmDiamSiap && !b.paused){
+window.bgmMenungguTap = false;
+return;
+}
+var jalan = b.play();
+if(jalan && jalan.then){
+jalan.then(function(){
+window.bgmMenungguTap = false;
+window.bgmDiamSiap = true;
+}).catch(function(){
+window.bgmMenungguTap = true;
+b.addEventListener("canplay", function(){
+b.muted = false;
+b.play().catch(function(){});
+},{once:true});
+});
+}else{
+window.bgmMenungguTap = false;
+}
+}
+
+function mulaiBacksound(){
+putarBacksoundSegera();
+}
+
 function bukaEfekSuara(){
 if(window.efekSuaraTerbuka){return;}
 var daftar = [suaraTangkap, suaraNice, suaraBagus, suaraMantap];
@@ -119,28 +192,28 @@ window.efekSuaraTerbuka = true;
 window.audioTerbuka = true;
 }
 
-function mulaiBacksound(){
-if(window.muted || !window.bgm){return;}
-var b = window.bgm;
-function putar(){
-if(!b.paused && b.currentTime > 0){return;}
-b.play().then(function(){
-window.bgmMenungguTap = false;
-}).catch(function(){
-window.bgmMenungguTap = true;
-});
+function pasangTombolMulai(){
+var btn = document.getElementById("btnMulai");
+if(!btn){return;}
+var sedangMulai = false;
+function jalankanMulai(e){
+if(sedangMulai){return;}
+if(e){e.preventDefault();e.stopPropagation();}
+sedangMulai = true;
+window.muted = false;
+inisialisasiAudio();
+putarBacksoundSegera();
+mulaiGame();
+setTimeout(function(){sedangMulai = false;},900);
 }
-if(b.readyState >= 2){
-putar();
+btn.addEventListener("touchstart", jalankanMulai, {passive:false});
+btn.addEventListener("click", function(e){
+if(sedangMulai){
+e.preventDefault();
 return;
 }
-b.addEventListener("canplaythrough", putar, {once:true});
-try{b.load();}catch(err){}
-}
-
-function bukaAudioMobile(){
-bukaEfekSuara();
-mulaiBacksound();
+jalankanMulai(e);
+});
 }
 
 function pasangTombolAksi(btn, aksi){
@@ -242,6 +315,10 @@ screen.orientation.lock("portrait").catch(function(){});
 }
 
 function mulaiGame(){
+window.muted = false;
+window.gameSelesai = false;
+inisialisasiAudio();
+putarBacksoundSegera();
 document.body.innerHTML = `
 <style>
 html,body{
@@ -431,29 +508,14 @@ user-select:none;
 `;
 document.body.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
 document.documentElement.style.background = "linear-gradient(180deg,#87ceeb 0%,#87ceeb 60%,#7cb342 60%,#4caf50 100%)";
-window.posisi = 150; window.skor = 0; window.nyawa = 3; window.gitarTangkap = 0; window.ikanTangkap = 0; window.gameSelesai = false; window.muted = false; window.faseCuacaAktif = "pagi";
-window.suaraTangkap = new Audio("tangkap.mp3");
-window.suaraNice = new Audio("nice.mp3");
-window.suaraBagus = new Audio("bagus.mp3");
-window.suaraMantap = new Audio("mantap.mp3");
-window.bgm = new Audio("backsound.mp3");
-bgm.loop = true;
-bgm.volume = 0.28;
-suaraTangkap.volume = 0.6;
-suaraNice.volume = 0.45;
-suaraBagus.volume = 0.45;
-suaraMantap.volume = 0.5;
-siapkanAudioEl(bgm);
-siapkanAudioEl(suaraTangkap);
-siapkanAudioEl(suaraNice);
-siapkanAudioEl(suaraBagus);
-siapkanAudioEl(suaraMantap);
+window.posisi = 150; window.skor = 0; window.nyawa = 3; window.gitarTangkap = 0; window.ikanTangkap = 0; window.faseCuacaAktif = "pagi";
+inisialisasiAudio();
 window.yGitar = 20; window.waktuCuaca = 0; window.cloudData = []; window.bomList = []; window.invulnFrames = 0;
 window.heartList = []; window.shieldList = []; window.foodList = []; window.shieldActive = false; window.frameTick = 0;
 window.nextHeartAt = 220; window.nextShieldAt = 380; window.nextFoodAt = 120; window.nextFoodAnggota = "dea";
 if(gameLoopId){clearInterval(gameLoopId);}
 setupGameMobile();
-bukaAudioMobile();
+bukaEfekSuara();
 createClouds();
 updateCuaca();
 updateHud();
@@ -496,12 +558,12 @@ yGitar = 20;
 window.addEventListener("load", function(){
 aturTinggiLayar();
 pasangResizeLayar();
-var btnMulai = document.getElementById("btnMulai");
-if(btnMulai){
-pasangTombolAksi(btnMulai, function(){
-mulaiGame();
-});
-}
+inisialisasiAudio();
+siapkanBacksoundDiam();
+pasangTombolMulai();
+document.body.addEventListener("touchstart", function(){
+siapkanBacksoundDiam();
+},{once:true,passive:true});
 if(sessionStorage.getItem("quizInviteShown") === "1"){
 return;
 }
@@ -891,9 +953,15 @@ function toggleMute(){
 muted = !muted;
 document.getElementById("muteBtn").innerText = muted ? "🔇" : "🔊";
 if(muted){
-if(window.bgm){bgm.pause();}
+if(window.bgm){
+bgm.muted = true;
+bgm.pause();
+}
 }
 else{
+if(window.bgm){
+bgm.muted = false;
+}
 mulaiBacksound();
 }
 }
