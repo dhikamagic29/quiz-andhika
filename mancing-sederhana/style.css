@@ -495,8 +495,27 @@ h1{
   width:92px;
   height:44px;
   z-index:4;
-  transition:left .05s linear;
   filter:drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  will-change:left, top;
+}
+
+.ikan.ikan-gabus{
+  width:128px;
+  height:52px;
+}
+
+.ikan .badan-ikan{
+  position:absolute;
+  inset:0;
+  transform:rotate(var(--miring,0deg));
+  transform-origin:42% 50%;
+}
+
+.ikan .gelombang-ikan{
+  position:absolute;
+  inset:0;
+  transform-origin:42% 50%;
+  will-change:transform;
 }
 
 .ikan .foto-ikan{
@@ -506,8 +525,44 @@ h1{
   height:100%;
   object-fit:contain;
   object-position:center;
-  border-radius:0;
   border:none;
+  pointer-events:none;
+}
+
+.ikan.berenang .gelombang-ikan{
+  animation:renangTenang 1.35s ease-in-out infinite;
+}
+
+.ikan.mengejar .gelombang-ikan{
+  animation:renangKejar .62s ease-in-out infinite;
+}
+
+.ikan.menyerang-ikan .gelombang-ikan,
+.ikan.menyerang .gelombang-ikan{
+  animation:renangTerkam .14s ease-in-out infinite;
+}
+
+.ikan.kiri .foto-ikan{
+  transform:scaleX(-1);
+}
+
+@keyframes renangTenang{
+  0%,100%{transform:translateY(0) rotate(-4deg) skewX(-2deg);}
+  25%{transform:translateY(-2px) rotate(2deg) skewX(-4deg);}
+  50%{transform:translateY(0) rotate(5deg) skewX(2deg);}
+  75%{transform:translateY(2px) rotate(-3deg) skewX(-3deg);}
+}
+
+@keyframes renangKejar{
+  0%,100%{transform:translateX(0) rotate(-3deg) scale(1);}
+  25%{transform:translateX(3px) rotate(8deg) scale(1.04);}
+  50%{transform:translateX(-2px) rotate(-7deg) scale(1.02);}
+  75%{transform:translateX(4px) rotate(6deg) scale(1.05);}
+}
+
+@keyframes renangTerkam{
+  0%,100%{transform:translateX(0) scale(1.06);}
+  50%{transform:translateX(-10px) rotate(10deg) scale(1.16);}
 }
 
 .ikan .tanda{
@@ -526,55 +581,13 @@ h1{
   animation:tandaMuncul .36s ease infinite;
 }
 
-.ikan.kiri .foto-ikan{
-  transform:scaleX(-1);
-}
-
-.ikan.kiri .ekor{
-  left:-4px;
-  right:auto;
-  transform:scaleX(-1);
-}
-
-.ikan .ekor{
-  position:absolute;
-  right:-4px;
-  top:13px;
-  width:18px;
-  height:18px;
-  background:rgba(245,245,245,.85);
-  clip-path:polygon(0 50%,100% 0,100% 100%);
-  transform-origin:left center;
-  opacity:.8;
-  animation:kibas .28s linear infinite;
-}
-
-@keyframes kibas{
-  0%,100%{transform:rotate(-11deg);}
-  50%{transform:rotate(11deg);}
-}
-
 @keyframes tandaMuncul{
   0%,100%{transform:translateY(0);}
   50%{transform:translateY(-4px);}
 }
 
-.ikan.menyerang{
-  animation:serang .35s ease infinite;
-}
-
-.ikan.menerkam{
-  animation:terkamKeras .11s linear 8;
-}
-
-@keyframes serang{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.2) translateY(-6px);}
-}
-
-@keyframes terkamKeras{
-  0%,100%{transform:translateX(0) scale(1.02);}
-  50%{transform:translateX(-6px) scale(1.15);}
+.ikan.menerkam .gelombang-ikan{
+  animation:renangTerkam .09s ease-in-out 10;
 }
 
 @keyframes guncangGabus{

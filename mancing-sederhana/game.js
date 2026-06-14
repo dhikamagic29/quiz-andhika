@@ -29,11 +29,13 @@
   var bubbleCooldown = 0;
   var bgm = null;
   var suaraSukses = [];
+  var audioTerbuka = false;
+  var bgmDiamSiap = false;
 
   var jenisIkan = [
     {nama:"Nila Danau",poin:8,gambar:"assets/fish/fish-1.svg"},
     {nama:"Mas Andhika",poin:14,gambar:"assets/fish/fish-2.svg"},
-    {nama:"Gabus Air Dalam",poin:22,gambar:"assets/fish/fish-3.svg"},
+    {nama:"Gabus Air Dalam",poin:22,gambar:"ikan gabus.webp",jenis:"gabus"},
     {nama:"Toman Danau",poin:34,gambar:"assets/fish/fish-4.svg"}
   ];
 
@@ -62,7 +64,12 @@
     barPower: document.getElementById("barPower"),
     pemancing: document.getElementById("pemancing"),
     fotoAndhika: document.getElementById("fotoAndhika"),
-    menuFotoAndhika: document.getElementById("menuFotoAndhika")
+    menuFotoAndhika: document.getElementById("menuFotoAndhika"),
+    audioBgm: document.getElementById("audioBgm"),
+    audioTangkap: document.getElementById("audioTangkap"),
+    audioNice: document.getElementById("audioNice"),
+    audioBagus: document.getElementById("audioBagus"),
+    audioMantap: document.getElementById("audioMantap")
   };
 
   function aturTinggi(){
@@ -134,31 +141,78 @@
   }
 
   function inisialisasiAudio(){
-    if(!bgm){
-      bgm = new Audio("backsound.mp3");
+    if(!bgm && el.audioBgm){
+      bgm = el.audioBgm;
       bgm.loop = true;
-      bgm.volume = 0.25;
+      bgm.volume = 0.28;
       siapkanAudioEl(bgm);
     }
     if(suaraSukses.length === 0){
-      suaraSukses = [
-        new Audio("tangkap.mp3"),
-        new Audio("nice.mp3"),
-        new Audio("bagus.mp3"),
-        new Audio("mantap.mp3")
-      ];
+      suaraSukses = [el.audioTangkap, el.audioNice, el.audioBagus, el.audioMantap].filter(function(a){
+        return !!a;
+      });
       for(var i = 0; i < suaraSukses.length; i++){
-        suaraSukses[i].volume = 0.48;
+        suaraSukses[i].volume = 0.55;
         siapkanAudioEl(suaraSukses[i]);
       }
+    }
+  }
+
+  function bukaEfekSuara(){
+    if(audioTerbuka){return;}
+    inisialisasiAudio();
+    for(var i = 0; i < suaraSukses.length; i++){
+      (function(a){
+        var volAsli = a.volume;
+        a.volume = 0.01;
+        var j = a.play();
+        if(j && j.then){
+          j.then(function(){
+            a.pause();
+            a.currentTime = 0;
+            a.volume = volAsli;
+          }).catch(function(){
+            a.volume = volAsli;
+          });
+        }else{
+          a.volume = volAsli;
+        }
+      })(suaraSukses[i]);
+    }
+    audioTerbuka = true;
+  }
+
+  function siapkanBacksoundDiam(){
+    if(muted || bgmDiamSiap){return;}
+    inisialisasiAudio();
+    if(!bgm){return;}
+    bgm.muted = true;
+    var j = bgm.play();
+    if(j && j.then){
+      j.then(function(){
+        bgmDiamSiap = true;
+      }).catch(function(){});
+    }else{
+      bgmDiamSiap = true;
     }
   }
 
   function putarBacksound(){
     if(muted){return;}
     inisialisasiAudio();
+    bukaEfekSuara();
     if(!bgm){return;}
-    bgm.play().catch(function(){});
+    bgm.muted = false;
+    bgm.volume = 0.28;
+    if(bgmDiamSiap && !bgm.paused){
+      return;
+    }
+    var j = bgm.play();
+    if(j && j.then){
+      j.then(function(){
+        bgmDiamSiap = true;
+      }).catch(function(){});
+    }
   }
 
   function hentikanBacksound(){
@@ -169,24 +223,38 @@
   function putarSuaraSukses(){
     if(muted){return;}
     inisialisasiAudio();
-    var berhasil = false;
+    bukaEfekSuara();
     if(suaraSukses.length){
       var pilih = suaraSukses[Math.floor(Math.random() * suaraSukses.length)];
-      try{
-        pilih.currentTime = 0;
-        pilih.play().then(function(){}).catch(function(){});
-        berhasil = true;
-      }catch(err){}
+      pilih.currentTime = 0;
+      var j = pilih.play();
+      if(j && j.then){
+        j.catch(function(){
+          putarSuaraFallback();
+        });
+        return;
+      }
+      return;
     }
-    if(!berhasil && "speechSynthesis" in window){
-      var kata = ["Mantap!", "Bagus!", "Nice strike!"];
-      var u = new SpeechSynthesisUtterance(kata[Math.floor(Math.random() * kata.length)]);
-      u.lang = "id-ID";
-      u.rate = 1.02;
-      u.pitch = 1.05;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
-    }
+    putarSuaraFallback();
+  }
+
+  function putarSuaraFallback(){
+    if(!("speechSynthesis" in window)){return;}
+    var kata = ["Mantap!", "Bagus!", "Nice strike!"];
+    var u = new SpeechSynthesisUtterance(kata[Math.floor(Math.random() * kata.length)]);
+    u.lang = "id-ID";
+    u.rate = 1.02;
+    u.pitch = 1.05;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
+
+  function aktifkanAudioDariTap(){
+    muted = false;
+    inisialisasiAudio();
+    siapkanBacksoundDiam();
+    putarBacksound();
   }
 
   function munculkanGelembung(jumlah){
@@ -258,9 +326,11 @@
       }
       var ikan = document.createElement("div");
       ikan.className = "ikan";
-      ikan.innerHTML = '<img class="foto-ikan" alt="ikan"><span class="ekor"></span><span class="tanda">!</span>';
+      ikan.innerHTML = '<div class="badan-ikan"><div class="gelombang-ikan"><img class="foto-ikan" alt="ikan"></div><span class="tanda">!</span></div>';
       ikan.dataset.poin = j.poin;
       ikan.dataset.nama = j.nama;
+      if(j.jenis === "gabus"){ikan.classList.add("ikan-gabus");}
+      ikan.classList.add("berenang");
       var gambarIkan = ikan.querySelector(".foto-ikan");
       gambarIkan.src = j.gambar;
       var x = 8 + Math.random() * 78;
@@ -279,6 +349,24 @@
     }
   }
 
+  function aturAnimasiIkan(ik, mode, targetX, targetY){
+    ik.classList.remove("berenang","mengejar","menyerang-ikan");
+    if(mode === "kejar"){
+      ik.classList.add("mengejar");
+    }else if(mode === "serang"){
+      ik.classList.add("menyerang-ikan");
+    }else{
+      ik.classList.add("berenang");
+    }
+    var x = parseFloat(ik.dataset.x);
+    var y = parseFloat(ik.dataset.y);
+    var dx = targetX - x;
+    var dy = targetY - y;
+    var miring = Math.max(-22, Math.min(22, dy * 1.4 + (mode === "serang" ? 8 : 0)));
+    ik.style.setProperty("--miring", miring + "deg");
+    ik.classList.toggle("kiri", dx < 0);
+  }
+
   function gerakIkan(){
     if(fase !== FASE.DASAR && fase !== FASE.SERANG){return;}
     for(var i = 0; i < ikanList.length; i++){
@@ -293,46 +381,47 @@
       ik.dataset.tertarik = tertarik ? "1" : "0";
       ik.classList.toggle("tertarik", tertarik);
 
+      var targetX = posisiUmpan;
+      var targetY = kedalamanUmpan;
+      var modeGerak = "berenang";
+      var lerp = 0.12;
+
       if(tertarik){
+        modeGerak = "kejar";
+        lerp = 0.2 + (ritmeLure / 500);
         var respon = parseFloat(ik.dataset.respon);
-        var dorong = Math.max(0.08, (ritmeLure / 120)) * respon;
-        var inersia = parseFloat(ik.dataset.inersia);
-        var biasArah = arahLure * (0.12 + (momentumLure * 0.035));
-        inersia = (inersia * 0.72) + (biasArah * 0.28);
-        ik.dataset.inersia = inersia.toFixed(3);
-        if(posisiUmpan > x + 0.9){
-          arah = 1;
-        }else if(posisiUmpan < x - 0.9){
-          arah = -1;
-        }
+        var dorong = Math.max(0.12, (ritmeLure / 95)) * respon;
+        if(posisiUmpan > x + 0.9){arah = 1;}
+        else if(posisiUmpan < x - 0.9){arah = -1;}
         ik.dataset.arah = arah;
-        x += (posisiUmpan > x ? 1 : -1) * dorong;
-        x += inersia;
-        y += (kedalamanUmpan > y ? 1 : -1) * 0.04;
+        targetX = posisiUmpan;
+        targetY = kedalamanUmpan + (Math.sin(Date.now() / 180) * 0.35);
+        x += (posisiUmpan - x) * lerp + (arah * dorong * 0.35);
+        y += (targetY - y) * lerp;
       }else{
-        x += arah * spd;
+        var tx = x + arah * spd;
+        x += (tx - x) * 0.35;
         if(jarak < 12){
-          if(posisiUmpan > x + 0.7){
-            arah = -1;
-          }else if(posisiUmpan < x - 0.7){
-            arah = 1;
-          }
+          if(posisiUmpan > x + 0.7){arah = -1;}
+          else if(posisiUmpan < x - 0.7){arah = 1;}
           ik.dataset.arah = arah;
-          x += (posisiUmpan > x ? -1 : 1) * 0.45;
+          x += (posisiUmpan > x ? -1 : 1) * 0.35;
         }
+        targetX = x + arah * 2;
+        targetY = y;
       }
 
       if(x < 4 || x > 88){
         arah *= -1;
         ik.dataset.arah = arah;
       }
-      y += (Math.random() - 0.5) * 0.08;
+      y += (Math.random() - 0.5) * 0.04;
       y = Math.max(58, Math.min(88, y));
       ik.dataset.x = x;
       ik.dataset.y = y;
       ik.style.left = x + "%";
       ik.style.top = y + "%";
-      ik.classList.toggle("kiri", arah < 0);
+      aturAnimasiIkan(ik, modeGerak, targetX, targetY);
     }
   }
 
@@ -367,7 +456,8 @@
     ikanPenyerang = ikan;
     fase = FASE.SERANG;
     ikan.classList.add("menyerang");
-    ikan.classList.remove("tertarik");
+    ikan.classList.remove("tertarik","mengejar","berenang");
+    aturAnimasiIkan(ikan, "serang", posisiUmpan, kedalamanUmpan);
     el.umpan.classList.add("menggigit");
     el.panelSerang.classList.remove("tersembunyi");
     el.btnLempar.disabled = true;
@@ -589,7 +679,7 @@
     var dariSentuh = false;
     function jalankan(e){
       if(e){e.preventDefault();e.stopPropagation();}
-      putarBacksound();
+      aktifkanAudioDariTap();
       fn();
     }
     btn.addEventListener("touchstart", function(e){
@@ -609,7 +699,7 @@
     el.menu.classList.add("tersembunyi");
     el.game.classList.remove("tersembunyi");
     skor = 0;
-    putarBacksound();
+    aktifkanAudioDariTap();
     ritmeLure = 0;
     updateSkor();
     updateRitme();
@@ -673,10 +763,17 @@
       tarikOffsetX = Math.sin(Date.now() / 90) * 4;
       tarikOffsetY = Math.cos(Date.now() / 105) * 2;
       if(ikanPenyerang){
-        ikanPenyerang.dataset.x = posisiUmpan + (tarikOffsetX / 4);
-        ikanPenyerang.dataset.y = kedalamanUmpan + 3.2;
-        ikanPenyerang.style.left = ikanPenyerang.dataset.x + "%";
-        ikanPenyerang.style.top = ikanPenyerang.dataset.y + "%";
+        var sx = parseFloat(ikanPenyerang.dataset.x);
+        var sy = parseFloat(ikanPenyerang.dataset.y);
+        var tx = posisiUmpan + (tarikOffsetX / 5);
+        var ty = kedalamanUmpan + 2.8;
+        sx += (tx - sx) * 0.28;
+        sy += (ty - sy) * 0.28;
+        ikanPenyerang.dataset.x = sx;
+        ikanPenyerang.dataset.y = sy;
+        ikanPenyerang.style.left = sx + "%";
+        ikanPenyerang.style.top = sy + "%";
+        aturAnimasiIkan(ikanPenyerang, "serang", tx, ty);
       }
       el.pemancing.classList.toggle("supertegang", strikePower > 76);
       updateBarStrike();
@@ -789,4 +886,12 @@
     updateBarStrike();
     loop();
   });
+
+  document.body.addEventListener("touchstart", function(){
+    siapkanBacksoundDiam();
+  }, {once:true, passive:true});
+
+  document.body.addEventListener("click", function(){
+    siapkanBacksoundDiam();
+  }, {once:true});
 })();

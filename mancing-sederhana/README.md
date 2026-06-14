@@ -16,6 +16,20 @@ Game mancing HTML untuk keluarga — lempar umpan ke dasar sungai, tunggu ikan m
 - `style.css` — tampilan sungai & UI
 - `game.js` — logika mancing
 
+## Suara (sama seperti Petualangan Andhika)
+
+Letakkan file MP3 ini di folder **induk** `quiz-andhika/` (sejajar dengan `petualangan-andhika.html`):
+
+- `backsound.mp3`
+- `tangkap.mp3`
+- `nice.mp3`
+- `bagus.mp3`
+- `mantap.mp3`
+
+Atau salin kelima file itu ke folder `mancing-sederhana/` juga.
+
+Setelah buka game, tap sekali di layar (atau **Mulai Mancing**) supaya browser mengizinkan musik.
+
 ## GitHub Pages
 
 Aktifkan Pages dari branch `main`, folder root. URL: `https://USERNAME.github.io/mancing-sederhana/`

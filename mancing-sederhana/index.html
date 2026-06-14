@@ -6,8 +6,29 @@
   <meta name="theme-color" content="#1565c0">
   <title>Casting Danau Andhika</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preload" href="../backsound.mp3" as="fetch" crossorigin>
 </head>
 <body>
+  <audio id="audioBgm" loop preload="auto" playsinline>
+    <source src="../backsound.mp3" type="audio/mpeg">
+    <source src="backsound.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audioTangkap" preload="auto" playsinline>
+    <source src="../tangkap.mp3" type="audio/mpeg">
+    <source src="tangkap.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audioNice" preload="auto" playsinline>
+    <source src="../nice.mp3" type="audio/mpeg">
+    <source src="nice.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audioBagus" preload="auto" playsinline>
+    <source src="../bagus.mp3" type="audio/mpeg">
+    <source src="bagus.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audioMantap" preload="auto" playsinline>
+    <source src="../mantap.mp3" type="audio/mpeg">
+    <source src="mantap.mp3" type="audio/mpeg">
+  </audio>
   <div id="layarMenu" class="layar">
     <div class="kartu-menu">
       <img id="menuFotoAndhika" src="andhika.jpeg" alt="Foto Andhika" />
