@@ -457,6 +457,7 @@
     fase = FASE.SERANG;
     ikan.classList.add("menyerang");
     ikan.classList.remove("tertarik","mengejar","berenang");
+    ikan.classList.add("menempel"); // Tambahkan kelas 'menempel' saat ikan menyambar
     aturAnimasiIkan(ikan, "serang", posisiUmpan, kedalamanUmpan);
     el.umpan.classList.add("menggigit");
     el.panelSerang.classList.remove("tersembunyi");
@@ -492,7 +493,7 @@
   function gagalSerang(){
     if(fase !== FASE.SERANG){return;}
     clearTimeout(timerGigit);
-    if(ikanPenyerang){ikanPenyerang.classList.remove("menyerang","menerkam");}
+    if(ikanPenyerang){ikanPenyerang.classList.remove("menyerang","menerkam","menempel");} // Hapus kelas 'menempel'
     el.umpan.classList.remove("menggigit");
     el.umpan.classList.remove("menggoda");
     el.umpan.classList.remove("diguncang-gabus");

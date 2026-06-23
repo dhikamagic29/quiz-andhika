@@ -178,13 +178,19 @@ h1{
   box-shadow:0 0 0 2px rgba(255,247,199,.45), 0 6px 16px rgba(0,0,0,.3);
 }
 
-#ritmeBox{
-  background:rgba(0,0,0,.35);
-  color:#dcf3ff;
-  padding:8px 12px;
-  border-radius:12px;
-  font-weight:700;
-  font-size:14px;
+#ritmeBox.ritme-sedang{ color: #fff176; }
+#ritmeBox.ritme-bagus{ color: #69f0ae; text-shadow: 0 0 8px rgba(105,240,174,0.5); }
+#ritmeBox.ritme-ekstrim{ color: #ff5252; animation: getar-ritme 0.2s infinite; }
+
+@keyframes getar-ritme {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+.ikan-gabus .foto-ikan {
+  /* No mix-blend-mode needed anymore, image has a perfect transparent background! */
+  filter: contrast(1.05) brightness(1.0);
 }
 
 #pesanFase{
@@ -850,4 +856,226 @@ h1{
 
 @media (max-width:480px){
   #pemancing{font-size:36px;top:11%;}
+}
+
+/* ==========================================
+   PERFECTED ENHANCEMENTS FOR MANCING GAME
+   ========================================== */
+
+/* 1. Header Typography Enhancement */
+.kartu-menu h1 {
+  font-family: "Impact", "Segoe UI Black", Arial, sans-serif;
+  font-size: clamp(1.8rem, 6vw, 2.4rem);
+  margin-bottom: 8px;
+  background: linear-gradient(180deg, #fff9c4 0%, #ffd54f 50%, #ff8f00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.6));
+  letter-spacing: 0.5px;
+}
+
+/* 2. Lake Vibe Shift (Automatic Day-Night Cycles) */
+/* Vibe 0: Pagi (Morning) */
+#layarGame.vibe-pagi #langit {
+  background: linear-gradient(180deg, #ff9e80 0%, #ffcc80 45%, #ffe0b2 100%);
+}
+#layarGame.vibe-pagi #permukaanAir {
+  background: linear-gradient(180deg, rgba(255,204,128,0.45), rgba(79,195,247,0.78));
+}
+#layarGame.vibe-pagi #kolam {
+  background: linear-gradient(180deg, #29b6f6 0%, #0288d1 32%, #01579b 66%, #002f6c 100%);
+}
+
+/* Vibe 1: Siang (Day) */
+#layarGame.vibe-siang #langit {
+  background: linear-gradient(180deg, #29b6f6 0%, #81d4fa 60%, #e1f5fe 100%);
+}
+#layarGame.vibe-siang #permukaanAir {
+  background: linear-gradient(180deg, rgba(129,212,250,0.45), rgba(3,169,244,0.78));
+}
+#layarGame.vibe-siang #kolam {
+  background: linear-gradient(180deg, #03a9f4 0%, #0288d1 32%, #01579b 66%, #002171 100%);
+}
+
+/* Vibe 2: Sore (Sunset - Original) */
+#layarGame.vibe-sore #langit {
+  background: linear-gradient(180deg, #86b8ff 0%, #ffc9a8 48%, #ffe9c9 100%);
+}
+#layarGame.vibe-sore #permukaanAir {
+  background: linear-gradient(180deg, rgba(255,209,170,0.45), rgba(38,130,196,0.78));
+}
+#layarGame.vibe-sore #kolam {
+  background: linear-gradient(180deg, #2c8bc5 0%, #1f6fa6 32%, #145075 66%, #0d364d 100%);
+}
+
+/* Vibe 3: Malam (Night) */
+#layarGame.vibe-malam #langit {
+  background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+}
+#layarGame.vibe-malam #permukaanAir {
+  background: linear-gradient(180deg, rgba(65,90,119,0.45), rgba(13,27,42,0.78));
+}
+#layarGame.vibe-malam #kolam {
+  background: linear-gradient(180deg, #1b263b 0%, #0d1b2a 32%, #08111a 66%, #020508 100%);
+}
+#layarGame.vibe-malam #dasar {
+  background: linear-gradient(180deg, rgba(0,0,0,0), #08111a 40%, #020508);
+}
+
+/* 3. Celestial Bodies (Sun and Moon) */
+#bendaLangit {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  transition: all 1.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 1;
+}
+/* Pagi position */
+#layarGame.vibe-pagi #bendaLangit {
+  background: #ffb74d;
+  box-shadow: 0 0 25px #ff9800, 0 0 10px rgba(255,152,0,0.5) inset;
+  left: 20%;
+  top: 45%;
+}
+/* Siang position */
+#layarGame.vibe-siang #bendaLangit {
+  background: #fffde7;
+  box-shadow: 0 0 35px #fff, 0 0 15px rgba(255,255,255,0.4) inset;
+  left: 50%;
+  top: 15%;
+}
+/* Sore position */
+#layarGame.vibe-sore #bendaLangit {
+  background: #e65100;
+  box-shadow: 0 0 30px #ff3d00, 0 0 12px rgba(255,61,0,0.6) inset;
+  left: 80%;
+  top: 50%;
+}
+/* Malam position */
+#layarGame.vibe-malam #bendaLangit {
+  background: #eceff1;
+  box-shadow: 0 0 25px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.3) inset;
+  left: 75%;
+  top: 25%;
+}
+
+/* 4. Andhika's Comic-Style Thought Bubble */
+#gelembungPikir {
+  position: absolute;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(255, 255, 255, 0.95);
+  border: 2.5px solid #2f5575;
+  border-radius: 14px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a365d;
+  min-width: 120px;
+  max-width: 180px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  pointer-events: none;
+  z-index: 15;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+#gelembungPikir.aktif {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#gelembungPikir::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 9px 9px 0;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.95) transparent;
+  display: block;
+  width: 0;
+}
+
+#gelembungPikir::before {
+  content: "";
+  position: absolute;
+  bottom: -12.5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: #2f5575 transparent;
+  display: block;
+  width: 0;
+  z-index: -1;
+}
+
+/* 5. Screen Shake on Fish Bursts */
+#layarGame.guncang-layar {
+  animation: guncangScreen 0.15s linear infinite;
+}
+
+@keyframes guncangScreen {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-3px, 2px) rotate(-0.5deg); }
+  50% { transform: translate(2px, -3px) rotate(0.5deg); }
+  75% { transform: translate(-1px, -1px) rotate(-0.3deg); }
+}
+
+/* 6. Dynamic Fishing Line Tension States */
+#tali.tali-tegang line {
+  stroke: #ff5252 !important;
+  stroke-width: 3.5px !important;
+  animation: getarTali 0.08s infinite !important;
+  filter: drop-shadow(0 0 5px rgba(255, 82, 82, 0.8));
+}
+
+#tali.tali-kendor line {
+  stroke: #90a4ae !important;
+  stroke-width: 1.5px !important;
+  opacity: 0.6;
+}
+
+#tali.tali-ideal line {
+  stroke: #69f0ae !important;
+  stroke-width: 3.0px !important;
+  filter: drop-shadow(0 0 6px rgba(105, 240, 174, 0.7));
+}
+
+@keyframes getarTali {
+  0%, 100% { transform: translateX(0); }
+  33% { transform: translateX(-1.5px); }
+  66% { transform: translateX(1.5px); }
+}
+
+/* 7. Bubble Upward Motion Polish (tall screens compatibility) */
+@keyframes naikGelembung{
+  0%{transform:translateY(0) scale(.7); opacity:.1;}
+  20%{opacity:.75;}
+  100%{transform:translateY(-80vh) scale(1.15); opacity:0;}
+}
+
+/* 8. Modals Style */
+.kartu-rekor {
+  border: 2px solid #ffd54f !important;
+  background: rgba(26, 42, 64, 0.95) !important;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.6) !important;
+}
+
+.rekor-item {
+  transition: transform 0.2s;
+}
+.rekor-item:hover {
+  transform: scale(1.02);
+}
+
+.kartu-menang {
+  border: 2px solid #69f0ae !important;
+  background: rgba(13, 50, 31, 0.95) !important;
+  box-shadow: 0 15px 45px rgba(0,0,0,0.6) !important;
 }

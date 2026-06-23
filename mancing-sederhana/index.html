@@ -40,7 +40,10 @@
         <li>Setelah lure masuk air, tekan kiri/kanan berulang agar lure bergerak menarik</li>
         <li>Kalau ikan tertarik, muncul tanda <strong>!</strong> lalu lanjut <strong>Strike!</strong></li>
       </ul>
-      <button type="button" id="btnMulai" class="btn-utama">🎣 Mulai Mancing</button>
+      <div class="menu-actions" style="display: flex; gap: 12px; width: 100%; margin-top: 15px;">
+        <button type="button" id="btnMulai" class="btn-utama" style="flex: 1; margin: 0;">🎣 Mulai Mancing</button>
+        <button type="button" id="btnRekor" class="btn-utama" style="flex: 0 0 64px; margin: 0; padding: 12px 0; font-size: 22px;" title="Lihat Rekor">🏆</button>
+      </div>
     </div>
   </div>
 
@@ -57,7 +60,9 @@
       <button type="button" id="btnMute" aria-label="Suara">🔊</button>
     </div>
 
-    <div id="langit"></div>
+    <div id="langit">
+      <div id="bendaLangit"></div>
+    </div>
     <div id="lanskapTepi">
       <div class="pohon pohon-kiri">
         <span class="kanopi"></span>
@@ -89,12 +94,13 @@
       <div id="dasar"></div>
       <div id="areaIkan"></div>
       <div id="umpan" class="tersembunyi" aria-hidden="true">
-        <img id="imgLure" src="file:///C:/Users/R%20Y%20Z%20E%20N/.cursor/projects/c-Users-R-Y-Z-E-N-OneDrive-Documents-GitHub-quiz-andhika/assets/c__Users_R_Y_Z_E_N_AppData_Roaming_Cursor_User_workspaceStorage_empty-window_images_lure-4ac83783-2174-4371-98a9-d8435ae43469.png" alt="Lure" />
+        <img id="imgLure" src="lure.png" alt="Lure" />
       </div>
       <svg id="tali" aria-hidden="true"><line id="taliGaris" x1="50%" y1="0" x2="50%" y2="0"/></svg>
     </div>
 
     <div id="pemancing">
+      <div id="gelembungPikir" class="tersembunyi"></div>
       <img id="fotoAndhika" src="andhika.jpeg" alt="Andhika" />
       <span class="rod" aria-hidden="true">
         <span class="rod-batang"></span>
@@ -114,6 +120,18 @@
         <div id="barPower"></div>
       </div>
       <p class="hint-strike">Jaga power di zona hijau. Tap untuk pompa tarik.</p>
+      
+      <!-- New Hook Progress Meter -->
+      <div class="progress-hook-container" style="margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 4px;">
+          <span>PROGRES TARIKAN:</span>
+          <span><span id="hookPersen">0</span>%</span>
+        </div>
+        <div id="meterHook" style="position: relative; height: 12px; border-radius: 999px; background: rgba(0,0,0,0.4); overflow: hidden; border: 1px solid rgba(255,255,255,0.15);">
+          <div id="barHook" style="position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: linear-gradient(90deg, #64b5f6, #1e88e5); transition: width 0.1s linear; box-shadow: 0 0 6px rgba(30,136,229,0.5);"></div>
+        </div>
+      </div>
+      
       <button type="button" id="btnTarik" class="btn-utama btn-tarik">Pompa tarik!</button>
     </div>
 
@@ -124,6 +142,42 @@
     </div>
 
     <div id="toast"></div>
+  </div>
+
+  <div id="modalRekor" class="layar tersembunyi" style="z-index: 100;">
+    <div class="kartu-menu kartu-rekor" style="max-height: 90vh; overflow-y: auto;">
+      <h2 style="font-family: 'Impact', 'Segoe UI Black', sans-serif; font-size: 24px; color: #ffd54f; margin-bottom: 8px;">🏆 REKOR TERBESAR</h2>
+      <p style="font-size: 13px; margin-bottom: 15px; opacity: 0.9; color: #fff;">Tangkapan terbesar Andhika selama casting di danau.</p>
+      <div id="listRekor" style="text-align: left; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px;">
+        <!-- Filled dynamically by JS -->
+      </div>
+      <button type="button" id="btnTutupRekor" class="btn-utama">Tutup</button>
+    </div>
+  </div>
+
+  <div id="layarMenang" class="layar tersembunyi" style="z-index: 110;">
+    <div class="kartu-menu kartu-menang">
+      <span style="font-size: 52px; display: block; margin-bottom: 10px;">🏆</span>
+      <h2 style="font-family: 'Impact', 'Segoe UI Black', sans-serif; font-size: 24px; color: #fff9c4; margin-bottom: 8px;">BOX IKAN PENUH!</h2>
+      <p class="tagline">Andhika sukses memancing hari ini! Danau telah takluk.</p>
+      
+      <div class="stats-box" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 16px; border-radius: 16px; margin-bottom: 20px; text-align: left;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; color: #fff;">
+          <span>Total Skor:</span>
+          <span style="color: #ffd54f;"><span id="statSkor">0</span> Poin</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; color: #fff;">
+          <span>Jumlah Strike:</span>
+          <span style="color: #fff;"><span id="statTangkap">0</span> Ekor</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-weight: 600; color: #fff;">
+          <span>Tangkapan Terberat:</span>
+          <span style="color: #69f0ae;"><span id="statTerbesar">-</span></span>
+        </div>
+      </div>
+      
+      <button type="button" id="btnSelesaiMancing" class="btn-utama">Casting Lagi</button>
+    </div>
   </div>
 
   <script src="game.js"></script>
